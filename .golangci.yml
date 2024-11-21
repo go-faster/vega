@@ -1,10 +1,10 @@
 linters-settings:
-  govet:
-    check-shadowing: true
+  revive:
+    rules:
+      - name: unused-parameter
+        disabled: true
   gocyclo:
     min-complexity: 15
-  maligned:
-    suggest-new: true
   dupl:
     threshold: 120
   goconst:
@@ -38,7 +38,7 @@ linters-settings:
 linters:
   disable-all: true
   enable:
-    - depguard
+    - shadow
     - dogsled
     - errcheck
     - goconst

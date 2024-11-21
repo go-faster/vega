@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"net/http"
+	"time"
 
 	"github.com/go-faster/errors"
 	"github.com/go-faster/sdk/app"
@@ -19,8 +20,9 @@ func main() {
 			return errors.Wrap(err, "create server")
 		}
 		h := &http.Server{
-			Addr:    ":8080",
-			Handler: srv,
+			Addr:              ":8080",
+			Handler:           srv,
+			ReadHeaderTimeout: time.Second,
 		}
 		g, ctx := errgroup.WithContext(ctx)
 		g.Go(func() error {
