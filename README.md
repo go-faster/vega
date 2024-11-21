@@ -2,7 +2,7 @@
 
 Work in progress.
 
-Research, development, best practices and ideas incubator for:
+Research, development and best practices incubator for:
 - Platform engineering
 - Application development
 - Observability
