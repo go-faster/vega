@@ -10,3 +10,7 @@ Research, development and best practices incubator for:
 - Configuration management
 - Documentation
 - Integration and performance testing
+- Integrations
+  - Tetragon
+  - Cilium
+  - Hubble
