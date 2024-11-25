@@ -1,5 +1,5 @@
 package main
 
 func main() {
-	// TODO
+	// TODO(ernado): implement
 }

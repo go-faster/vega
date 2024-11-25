@@ -13,7 +13,8 @@ func main() {
 	app.Run(func(ctx context.Context, lg *zap.Logger, m *app.Metrics) error {
 		g, ctx := errgroup.WithContext(ctx)
 		g.Go(func() error {
-			select {}
+			<-ctx.Done()
+			return ctx.Err()
 		})
 		return g.Wait()
 	})
