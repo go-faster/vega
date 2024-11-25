@@ -22,6 +22,8 @@ func (g GoBuild) Step() StepInfo {
 }
 
 // Run a go build.
+//
+// #nosec: G204
 func (g GoBuild) Run(ctx context.Context) error {
 	args := []string{
 		"build",
