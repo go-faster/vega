@@ -10,11 +10,18 @@ import (
 	"github.com/go-faster/errors"
 )
 
+// GoBuild builds go binary.
 type GoBuild struct {
 	// Binary from "cmd" to build. For example, "vega-agent".
 	Binary string
 }
 
+// BuildBinary is constructor for [GoBuild].
+func BuildBinary(name string) GoBuild {
+	return GoBuild{Binary: name}
+}
+
+// Step implements [Step].
 func (g GoBuild) Step() StepInfo {
 	return StepInfo{
 		Name: fmt.Sprintf("go(%s)", g.Binary),
