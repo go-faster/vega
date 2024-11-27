@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"os"
 	"os/exec"
 	"path/filepath"
 
@@ -42,6 +43,11 @@ func (g GoBuild) Run(ctx context.Context) error {
 	stdout := bytes.NewBuffer(nil)
 	cmd.Stderr = stderr
 	cmd.Stdout = stdout
+
+	env := os.Environ()
+	env = append(env, "GOOS=linux", "GOARCH=amd64", "CGO_ENABLED=0")
+	cmd.Env = env
+
 	if err := cmd.Run(); err != nil {
 		return errors.Wrapf(err, "exec go (stderr: %s, stdout: %s)", stderr, stdout)
 	}
