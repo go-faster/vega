@@ -7,9 +7,13 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/go-faster/vega/internal/race"
 )
 
 func TestGoBuild_Run(t *testing.T) {
+	race.Skip(t)
+
 	t.Cleanup(func() {
 		_ = os.RemoveAll("_out/bin")
 	})
