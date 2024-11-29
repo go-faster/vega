@@ -3,4 +3,4 @@
 package race
 
 // Enabled is true.
-const Enabled = false
+const Enabled = true
