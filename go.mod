@@ -10,6 +10,7 @@ require (
 	github.com/go-faster/errors v0.7.1
 	github.com/go-faster/jx v1.1.0
 	github.com/go-faster/sdk v0.15.2
+	github.com/go-faster/tetragon/api v0.0.0-20230221120311-06f4d6348dc0
 	github.com/ogen-go/ent2ogen v0.0.0-20230913015246-1d588150cabc
 	github.com/ogen-go/ogen v1.7.0
 	github.com/spf13/cobra v1.8.1
@@ -20,6 +21,7 @@ require (
 	go.uber.org/mock v0.5.0
 	go.uber.org/zap v1.27.0
 	golang.org/x/sync v0.10.0
+	google.golang.org/grpc v1.68.0
 )
 
 require (
@@ -114,7 +116,7 @@ require (
 	github.com/remyoudompheng/bigfft v0.0.0-20200410134404-eec4a21b6bb0 // indirect
 	github.com/rogpeppe/go-internal v1.13.1 // indirect
 	github.com/segmentio/asm v1.2.0 // indirect
-	github.com/sirupsen/logrus v1.8.1 // indirect
+	github.com/sirupsen/logrus v1.9.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/vektah/gqlparser/v2 v2.5.15 // indirect
 	github.com/zclconf/go-cty v1.13.2 // indirect
@@ -157,7 +159,6 @@ require (
 	google.golang.org/genproto v0.0.0-20240227224415-6ceb2ff114de // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20241104194629-dd2ea8efbc28 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20241104194629-dd2ea8efbc28 // indirect
-	google.golang.org/grpc v1.68.0 // indirect
 	google.golang.org/protobuf v1.35.1 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
