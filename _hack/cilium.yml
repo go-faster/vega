@@ -1,0 +1,72 @@
+cluster:
+  id: 1
+  name: vega
+encryption:
+  nodeEncryption: false
+ingressController:
+  enabled: true
+hubble:
+  tls:
+    enabled: false
+  enabled: true
+  ui:
+    enabled: true
+  relay:
+    enabled: true
+    prometheus:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+  metrics:
+    dashboards:
+      enabled: true
+    serviceMonitor:
+      enabled: true
+    enabled:
+      - dns:labelsContext=source_namespace,source_workload,destination_namespace,destination_workload,traffic_direction
+      - drop:labelsContext=source_namespace,source_workload,destination_namespace,destination_workload,traffic_direction
+      - tcp:labelsContext=source_namespace,source_workload,destination_namespace,destination_workload,traffic_direction
+      - flow:labelsContext=source_namespace,source_workload,destination_namespace,destination_workload,traffic_direction
+      - port-distribution:labelsContext=source_ip,source_namespace,source_workload,destination_namespace,destination_workload,traffic_direction
+      - icmp:labelsContext=source_namespace,source_workload,destination_ip,destination_namespace,destination_workload,traffic_direction
+      - httpV2:exemplars=true;labelsContext=source_namespace,source_workload,destination_namespace,destination_workload,traffic_direction
+
+ipam:
+  mode: kubernetes
+kubeProxyReplacement: true
+operator:
+  prometheus:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+  replicas: 1
+prometheus:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+serviceAccounts:
+  cilium:
+    name: cilium
+  operator:
+    name: cilium-operator
+hostServices:
+  enabled: true
+  protocols: tcp
+externalIPs:
+  enabled: true
+nodePort:
+  enabled: true
+hostPort:
+  enabled: true
+pprof:
+  enabled: true
+k8sServiceHost: vega-control-plane
+k8sServicePort: 6443
+ipv4NativeRoutingCIDR: 10.0.0.0/8
+bpf:
+  masquerade: true
+  hostLegacyRouting: false
+  hostRouting: false
+  tproxy: true
+tunnelProtocol: vxlan
+routingMode: tunnel
