@@ -2,6 +2,7 @@ package installer
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
 	"golang.org/x/sync/errgroup"
@@ -41,6 +42,7 @@ func (p *Parallel) Run(ctx context.Context) error {
 			defer func() {
 				<-sema
 			}()
+			fmt.Println("> step:", s.Step().Name)
 			return s.Run(ctx)
 		})
 	}

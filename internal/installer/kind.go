@@ -10,7 +10,9 @@ import (
 
 // Kind is Kubernetes In Docker (KIND) installer.
 type Kind struct {
-	Bin string
+	Bin    string
+	Name   string
+	Config string
 }
 
 func (k Kind) Run(ctx context.Context) error {
@@ -18,9 +20,15 @@ func (k Kind) Run(ctx context.Context) error {
 	if b == "" {
 		b = "kind"
 	}
+	if k.Name == "" {
+		k.Name = "vega"
+	}
 	arg := []string{
 		"create", "cluster",
-		"-n", "vega",
+		"-n", k.Name,
+	}
+	if k.Config != "" {
+		arg = append(arg, "--config", k.Config)
 	}
 	cmd := exec.CommandContext(ctx, b, arg...)
 	cmd.Stdout = os.Stdout

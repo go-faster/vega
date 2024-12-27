@@ -21,7 +21,15 @@ func run(ctx context.Context) error {
 				installer.BuildBinary("vega"),
 			},
 		},
-		&installer.Kind{},
+		&installer.Docker{
+			Tags:    []string{"vega-agent:latest"},
+			File:    "agent.Dockerfile",
+			Context: ".",
+		},
+		&installer.Kind{
+			Name:   "vega",
+			Config: "_hack/vega.kind.yml",
+		},
 	}
 	for _, step := range steps {
 		fmt.Println("step:", step.Step().Name)
