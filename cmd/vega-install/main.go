@@ -4,11 +4,16 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/go-faster/errors"
 
 	"github.com/go-faster/vega/internal/installer"
 )
+
+func file(name string) string {
+	return filepath.Join("_hack", name)
+}
 
 func run(ctx context.Context) error {
 	// Actually this can be implemented as an acyclic graph.
@@ -28,7 +33,10 @@ func run(ctx context.Context) error {
 		},
 		&installer.Kind{
 			Name:   "vega",
-			Config: "_hack/vega.kind.yml",
+			Config: file("vega.kind.yml"),
+		},
+		&installer.KubeApply{
+			File: file("monitoring.coreos.com_servicemonitors.yaml"),
 		},
 	}
 	for _, step := range steps {
