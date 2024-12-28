@@ -38,6 +38,14 @@ func run(ctx context.Context) error {
 		&installer.KubeApply{
 			File: file("monitoring.coreos.com_servicemonitors.yaml"),
 		},
+		&installer.HelmUpgrade{
+			Name:      "cilium",
+			Chart:     "cilium/cilium",
+			Install:   true,
+			Version:   "1.16.5",
+			Values:    file("cilium.yml"),
+			Namespace: "kube-system",
+		},
 	}
 	for _, step := range steps {
 		fmt.Println("step:", step.Step().Name)
