@@ -39,12 +39,17 @@ func run(ctx context.Context) error {
 			File: file("monitoring.coreos.com_servicemonitors.yaml"),
 		},
 		&installer.HelmUpgrade{
-			Name:      "cilium",
-			Chart:     "cilium/cilium",
-			Install:   true,
-			Version:   "1.16.5",
-			Values:    file("cilium.yml"),
-			Namespace: "kube-system",
+			Name:            "cilium",
+			Chart:           "cilium/cilium",
+			Install:         true,
+			Version:         "1.16.5",
+			Values:          file("cilium.yml"),
+			Namespace:       "cilium",
+			CreateNamespace: true,
+		},
+		&installer.CiliumStatus{
+			Namespace: "cilium",
+			Wait:      true,
 		},
 	}
 	for _, step := range steps {
