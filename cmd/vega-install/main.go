@@ -17,6 +17,7 @@ func file(name string) string {
 
 func run(ctx context.Context) error {
 	// Actually this can be implemented as an acyclic graph.
+	kubeConfig := filepath.Join("_out", "kubeconfig.yml")
 	steps := []installer.Step{
 		&installer.Parallel{
 			Max: 6,
@@ -32,11 +33,18 @@ func run(ctx context.Context) error {
 			Context: ".",
 		},
 		&installer.Kind{
-			Name:   "vega",
-			Config: file("vega.kind.yml"),
+			Name:       "vega",
+			Config:     file("vega.kind.yml"),
+			KubeConfig: kubeConfig,
+		},
+		&installer.KindLoad{
+			Name:       "vega",
+			Images:     []string{"vega-agent:latest"},
+			KubeConfig: kubeConfig,
 		},
 		&installer.KubeApply{
-			File: file("monitoring.coreos.com_servicemonitors.yaml"),
+			File:       file("monitoring.coreos.com_servicemonitors.yaml"),
+			KubeConfig: kubeConfig,
 		},
 		&installer.HelmUpgrade{
 			Name:            "cilium",
@@ -46,10 +54,18 @@ func run(ctx context.Context) error {
 			Values:          file("cilium.yml"),
 			Namespace:       "cilium",
 			CreateNamespace: true,
+			KubeConfig:      kubeConfig,
 		},
 		&installer.CiliumStatus{
-			Namespace: "cilium",
-			Wait:      true,
+			Namespace:  "cilium",
+			Wait:       true,
+			KubeConfig: kubeConfig,
+		},
+		&installer.DaemonSet{
+			Name:       "vega-agent",
+			Image:      "vega-agent:latest",
+			Namespace:  "default",
+			KubeConfig: kubeConfig,
 		},
 	}
 	for _, step := range steps {

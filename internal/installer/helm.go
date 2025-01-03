@@ -17,6 +17,7 @@ type HelmUpgrade struct {
 	Namespace       string
 	CreateNamespace bool
 	Version         string
+	KubeConfig      string
 }
 
 func (h HelmUpgrade) Step() StepInfo {
@@ -31,6 +32,9 @@ func (h HelmUpgrade) Run(ctx context.Context) error {
 	arg := []string{
 		"upgrade",
 		h.Name, h.Chart,
+	}
+	if h.KubeConfig != "" {
+		arg = append(arg, "--kubeconfig", h.KubeConfig)
 	}
 	if h.Install {
 		arg = append(arg, "--install")

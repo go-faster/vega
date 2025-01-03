@@ -9,8 +9,9 @@ import (
 )
 
 type KubeApply struct {
-	Bin  string
-	File string
+	Bin        string
+	File       string
+	KubeConfig string
 }
 
 func (k KubeApply) Step() StepInfo {
@@ -24,6 +25,9 @@ func (k KubeApply) Run(ctx context.Context) error {
 	}
 	arg := []string{
 		"apply", "-f", k.File,
+	}
+	if k.KubeConfig != "" {
+		arg = append(arg, "--kubeconfig", k.KubeConfig)
 	}
 	cmd := exec.CommandContext(ctx, b, arg...)
 	cmd.Stdout = os.Stdout

@@ -9,9 +9,10 @@ import (
 )
 
 type CiliumStatus struct {
-	Bin       string
-	Namespace string
-	Wait      bool
+	Bin        string
+	Namespace  string
+	Wait       bool
+	KubeConfig string
 }
 
 func (c CiliumStatus) Step() StepInfo {
@@ -31,6 +32,9 @@ func (c CiliumStatus) Run(ctx context.Context) error {
 	}
 	if c.Namespace != "" {
 		arg = append(arg, "--namespace", c.Namespace)
+	}
+	if c.KubeConfig != "" {
+		arg = append(arg, "--kubeconfig", c.KubeConfig)
 	}
 	cmd := exec.CommandContext(ctx, b, arg...)
 	cmd.Stdout = os.Stdout
