@@ -61,11 +61,8 @@ func run(ctx context.Context) error {
 			Wait:       true,
 			KubeConfig: kubeConfig,
 		},
-		&installer.DaemonSet{
-			Name:       "vega-agent",
-			Image:      "vega-agent:latest",
-			Namespace:  "default",
-			KubeConfig: kubeConfig,
+		&installer.KubeApply{
+			File: file("k8s"),
 		},
 	}
 	for _, step := range steps {

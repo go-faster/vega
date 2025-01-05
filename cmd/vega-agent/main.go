@@ -29,7 +29,7 @@ func main() {
 		g.Go(func() error {
 			// Hubble component.
 			const (
-				hubblePath   = "/var/run/hubble/hubble.sock"
+				hubblePath   = "/var/run/cilium/hubble.sock"
 				hubbleTarget = "unix://" + hubblePath
 			)
 			{

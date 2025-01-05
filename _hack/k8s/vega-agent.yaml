@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: vega-agent
+spec:
+  selector:
+    matchLabels:
+      app: vega-agent
+  template:
+    metadata:
+      labels:
+        app: vega-agent
+    spec:
+      volumes:
+        - name: tetragon
+          hostPath:
+            path: /var/run/tetragon
+        - name: cilium
+          hostPath:
+            path: /var/run/cilium
+      containers:
+        - name: agent
+          image: vega-agent:latest
+          volumeMounts:
+            - mountPath: /var/run/tetragon
+              name: tetragon
+            - mountPath: /var/run/cilium
+              name: cilium
