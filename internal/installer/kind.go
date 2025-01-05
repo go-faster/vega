@@ -1,6 +1,7 @@
 package installer
 
 import (
+	"bytes"
 	"context"
 	"os"
 	"os/exec"
@@ -23,6 +24,25 @@ func (k Kind) Run(ctx context.Context) error {
 	}
 	if k.Name == "" {
 		k.Name = "vega"
+	}
+	{
+		// Check for existing cluster.
+		cmd := exec.CommandContext(ctx, b, "get", "clusters")
+		buf := &bytes.Buffer{}
+		cmd.Stdout = buf
+		cmd.Stderr = os.Stderr
+		if err := cmd.Run(); err != nil {
+			return errors.Wrap(err, "get clusters")
+		}
+		if bytes.Contains(buf.Bytes(), []byte(k.Name)) {
+			// Delete existing cluster.
+			cmd := exec.CommandContext(ctx, b, "delete", "cluster", "--name", k.Name)
+			cmd.Stdout = os.Stdout
+			cmd.Stderr = os.Stderr
+			if err := cmd.Run(); err != nil {
+				return errors.Wrap(err, "delete cluster")
+			}
+		}
 	}
 	arg := []string{
 		"create", "cluster",
