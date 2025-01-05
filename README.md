@@ -14,3 +14,17 @@ Research, development and best practices incubator for:
   - Tetragon
   - Cilium
   - Hubble
+
+## Running
+
+Requirements:
+- [kind](https://kind.sigs.k8s.io/docs/user/quick-start/)
+- [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)
+- docker
+- go 1.23
+
+```bash
+go run ./cmd/vega-install
+export KUBECONFIG=_out/kubeconfig.yml
+kubectl get pods -n vega
+```
