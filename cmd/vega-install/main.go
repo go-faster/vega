@@ -61,6 +61,16 @@ func run(ctx context.Context) error {
 			Wait:       true,
 			KubeConfig: kubeConfig,
 		},
+		&installer.HelmUpgrade{
+			Name:            "tetragon",
+			Chart:           "cilium/tetragon",
+			Install:         true,
+			Version:         "1.3.0",
+			Values:          file("tetragon.yml"),
+			Namespace:       "cilium",
+			CreateNamespace: true,
+			KubeConfig:      kubeConfig,
+		},
 		&installer.KubeApply{
 			File: file("k8s"),
 		},

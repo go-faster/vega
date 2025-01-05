@@ -1,0 +1,31 @@
+enabled: true
+
+extraVolumes:
+  - hostPath:
+      path: /var/run/tetragon
+      type: DirectoryOrCreate
+    name: tetragon-run
+
+tetragonOperator:
+  # -- Enable the tetragon-operator component (required).
+  enabled: true
+
+tetragon:
+  exportFilename: "" # disable file export
+  enabled: true
+  enableK8sAPI: true
+  enableCiliumAPI: true
+  enableProcessCred: true
+  enableProcessNs: true
+  extraVolumeMounts:
+    - mountPath: /var/run/tetragon
+      name: tetragon-run
+  prometheus:
+    enabled: true
+  grpc:
+    enabled: true
+    address: "unix:///var/run/tetragon/tetragon.sock"
+
+export:
+  # disable stdout export
+  mode: ""
