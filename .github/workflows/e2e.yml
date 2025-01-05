@@ -58,5 +58,10 @@ jobs:
           sha256sum --check cilium-linux-amd64.tar.gz.sha256sum
           sudo tar xzvfC cilium-linux-amd64.tar.gz /usr/local/bin
 
+      - name: Add helm repository for cilium
+        run: |
+          helm repo add cilium https://helm.cilium.io
+          helm repo update
+
       - name: Install vega
         run: go run ./cmd/vega-install
