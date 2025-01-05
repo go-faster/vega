@@ -91,9 +91,7 @@ func (k KindLoad) Run(ctx context.Context) error {
 		"load", "docker-image",
 		"--name", k.Name,
 	}
-	for _, img := range k.Images {
-		arg = append(arg, img)
-	}
+	arg = append(arg, k.Images...)
 	cmd := exec.CommandContext(ctx, b, arg...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
