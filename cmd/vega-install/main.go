@@ -72,7 +72,8 @@ func run(ctx context.Context) error {
 			KubeConfig:      kubeConfig,
 		},
 		&installer.KubeApply{
-			File: file("k8s"),
+			File:       file("k8s"),
+			KubeConfig: kubeConfig,
 		},
 	}
 	for _, step := range steps {
