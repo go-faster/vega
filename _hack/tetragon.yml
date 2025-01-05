@@ -9,6 +9,10 @@ extraVolumes:
 tetragonOperator:
   # -- Enable the tetragon-operator component (required).
   enabled: true
+  prometheus:
+    enabled: true
+    serviceMonitor:
+      enabled: true
 
 tetragon:
   exportFilename: "" # disable file export
@@ -22,6 +26,8 @@ tetragon:
       name: tetragon-run
   prometheus:
     enabled: true
+    serviceMonitor:
+      enabled: true
   grpc:
     enabled: true
     address: "unix:///var/run/tetragon/tetragon.sock"
