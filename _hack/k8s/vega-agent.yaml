@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: vega-agent
+  namespace: vega
 spec:
   selector:
     matchLabels:
@@ -20,7 +21,8 @@ spec:
             path: /var/run/cilium
       containers:
         - name: agent
-          image: vega-agent:latest
+          image: vega-agent
+          imagePullPolicy: Never
           volumeMounts:
             - mountPath: /var/run/tetragon
               name: tetragon

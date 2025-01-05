@@ -28,7 +28,7 @@ func run(ctx context.Context) error {
 			},
 		},
 		&installer.Docker{
-			Tags:    []string{"vega-agent:latest"},
+			Tags:    []string{"vega-agent"},
 			File:    "agent.Dockerfile",
 			Context: ".",
 		},
@@ -39,7 +39,7 @@ func run(ctx context.Context) error {
 		},
 		&installer.KindLoad{
 			Name:       "vega",
-			Images:     []string{"vega-agent:latest"},
+			Images:     []string{"vega-agent"},
 			KubeConfig: kubeConfig,
 		},
 		&installer.KubeApply{
