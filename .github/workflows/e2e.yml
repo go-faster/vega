@@ -57,3 +57,6 @@ jobs:
           curl -L --fail --remote-name-all https://github.com/cilium/cilium-cli/releases/download/v0.16.22/cilium-linux-amd64.tar.gz{,.sha256sum}
           sha256sum --check cilium-linux-amd64.tar.gz.sha256sum
           sudo tar xzvfC cilium-linux-amd64.tar.gz /usr/local/bin
+
+      - name: Install vega
+        run: go run ./cmd/vega-install
