@@ -20,8 +20,14 @@ Research, development and best practices incubator for:
 Requirements:
 - [kind](https://kind.sigs.k8s.io/docs/user/quick-start/)
 - [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)
+- [helm](https://helm.sh/docs/intro/install/)
 - docker
 - go 1.23
+
+```bash
+helm repo add cilium https://helm.cilium.io
+helm repo update
+```
 
 ```bash
 go run ./cmd/vega-install
