@@ -7,7 +7,7 @@ toolchain go1.23.3
 require (
 	ariga.io/atlas/cmd/atlas v0.13.1
 	entgo.io/ent v0.14.1
-	github.com/cilium/cilium v1.17.0-rc.0
+	github.com/cilium/cilium v1.17.0-rc.1
 	github.com/go-faster/errors v0.7.1
 	github.com/go-faster/jx v1.1.0
 	github.com/go-faster/sdk v0.15.2
