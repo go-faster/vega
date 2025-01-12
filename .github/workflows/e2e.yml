@@ -71,3 +71,13 @@ jobs:
 
       - name: Install vega
         run: go run ./cmd/vega-install
+
+      - name: Wait for vega
+        run: kubectl -n vega rollout status --timeout=2m daemonset vega-agent
+
+      - name: Wait for grafana
+        run: kubectl -n monitoring rollout status deployment grafana
+
+      - name: Wait for oteldb
+        run: kubectl -n faster rollout status deployment otel-oteldb
+
