@@ -20,7 +20,7 @@ import (
 )
 
 func main() {
-	app.Run(func(ctx context.Context, lg *zap.Logger, m *app.Metrics) error {
+	app.Run(func(ctx context.Context, lg *zap.Logger, m *app.Telemetry) error {
 		g, ctx := errgroup.WithContext(ctx)
 		g.Go(func() error {
 			<-ctx.Done()

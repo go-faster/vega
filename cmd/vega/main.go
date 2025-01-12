@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	app.Run(func(ctx context.Context, lg *zap.Logger, m *app.Metrics) error {
+	app.Run(func(ctx context.Context, lg *zap.Logger, m *app.Telemetry) error {
 		srv, err := oas.NewServer(oas.UnimplementedHandler{})
 		if err != nil {
 			return errors.Wrap(err, "create server")
