@@ -11,6 +11,7 @@ import (
 	"github.com/go-faster/errors"
 	"github.com/go-faster/sdk/app"
 	"github.com/go-faster/tetragon/api/v1/tetragon"
+	"go.opentelemetry.io/otel/metric"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
@@ -26,6 +27,7 @@ func main() {
 			<-ctx.Done()
 			return ctx.Err()
 		})
+		meter := m.MeterProvider().Meter("vega-agent")
 		g.Go(func() error {
 			// Hubble component.
 			const (
@@ -61,6 +63,11 @@ func main() {
 			if err != nil {
 				return errors.Wrap(err, "get flows")
 			}
+			logger := lg.Named("vega-agent.flows")
+			flowsCount, err := meter.Int64Counter("agent.hubble.flows_count", metric.WithDescription("Number of received flows"))
+			if err != nil {
+				return errors.Wrap(err, "create counter")
+			}
 			for {
 				resp, err := b.Recv()
 				switch {
@@ -73,8 +80,10 @@ func main() {
 					}
 					return errors.Wrap(err, "recv")
 				}
-
-				_ = resp // TODO: send this
+				logger.Info("Got flow",
+					zap.String("node", resp.NodeName),
+				)
+				flowsCount.Add(ctx, 1)
 			}
 		})
 		g.Go(func() error {
@@ -106,6 +115,11 @@ func main() {
 				}
 				lg.Info("tetragon version", zap.String("version", version.Version))
 			}
+			logger := lg.Named("vega-agent.tetragon.events")
+			eventsCount, err := meter.Int64Counter("agent.tetragon.events_count", metric.WithDescription("Number of received events"))
+			if err != nil {
+				return errors.Wrap(err, "create counter")
+			}
 			b, err := client.GetEvents(ctx, &tetragon.GetEventsRequest{})
 			if err != nil {
 				return errors.Wrap(err, "get events")
@@ -122,8 +136,10 @@ func main() {
 					}
 					return errors.Wrap(err, "recv")
 				}
-
-				_ = resp // TODO(ernado): send this
+				logger.Info("Got event",
+					zap.String("node", resp.NodeName),
+				)
+				eventsCount.Add(ctx, 1)
 			}
 		})
 		return g.Wait()
