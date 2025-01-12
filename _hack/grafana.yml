@@ -1,0 +1,124 @@
+grafana.ini:
+  server:
+    domain: grafana.cluster.local
+    root_url: 'http://grafana.localhost'
+    serve_from_sub_path: true
+  analytics:
+    check_for_updates: true
+  log:
+    mode: console
+  grafana_net:
+    url: https://grafana.net
+  auth.anonymous:
+    enabled: true
+    org_role: Admin
+  auth.disable_login_form: true
+deploymentStrategy:
+  type: Recreate
+
+serviceMonitor:
+  enabled: true
+ingress:
+  enabled: false
+env:
+  GF_FEATURE_TOGGLES_ENABLE: tempoSearch,tempoServiceGraph,tempoApmTable,traceqlEditor
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+      - name: VictoriaMetrics
+        type: prometheus
+        url: http://vmselect-cluster.monitoring.svc.cluster.local:8481/select/0/prometheus
+        uid: victoria
+
+      - name: "oteldb: TraceQL"
+        type: tempo
+        access: proxy
+        orgId: 1
+        url: http://otel-oteldb.faster.svc.cluster.local:3200
+        uid: traceql
+        jsonData:
+          httpMethod: GET
+          tracesToLogsV2:
+            # Field with an internal link pointing to a logs data source in Grafana.
+            # datasourceUid value must match the uid value of the logs data source.
+            datasourceUid: logql
+            spanStartTimeShift: '1h'
+            spanEndTimeShift: '-1h'
+            filterByTraceID: true
+            filterBySpanID: false
+            tags:
+              - key: service.name
+                value: service_name
+          tracesToMetrics:
+            datasourceUid: prometheus
+            spanStartTimeShift: '1h'
+            spanEndTimeShift: '-1h'
+            tags:
+              - key: service.name
+                value: service_name
+          nodeGraph:
+            enabled: true
+          serviceMap:
+            datasourceUid: prometheus
+          lokiSearch:
+            datasourceUid: logql
+
+      - name: "oteldb: LogQL"
+        type: loki
+        access: proxy
+        orgId: 1
+        url: http://otel-oteldb.faster.svc.cluster.local:3100
+        uid: logql
+        jsonData:
+          serviceMap:
+            datasourceUid: prometheus
+          maxLines: 500
+          derivedFields:
+            - datasourceUid: traceql
+              matcherRegex: '"trace_id":"([0-9a-f]+)"'
+              name: trace
+              url: '$${__value.raw}'
+              urlDisplayLabel: 'View Trace'
+
+      - name: "oteldb: PromQL"
+        type: prometheus
+        access: proxy
+        orgId: 1
+        url: http://otel-oteldb.faster.svc.cluster.local:9090
+        uid: prometheus
+
+## Enable persistence using Persistent Volume Claims
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+##
+persistence:
+  enabled: true
+  accessModes:
+    - ReadWriteOnce
+  size: 10Gi
+  # annotations: {}
+  finalizers:
+    - kubernetes.io/pvc-protection
+  # selectorLabels: {}
+  ## Sub-directory of the PV to mount. Can be templated.
+  # subPath: ""
+  ## Name of an existing PVC. Can be templated.
+  # existingClaim:
+  ## Extra labels to apply to a PVC.
+  extraPvcLabels: {}
+
+  ## If persistence is not enabled, this allows to mount the
+  ## local storage in-memory to improve performance
+  ##
+  inMemory:
+    enabled: false
+    ## The maximum usage on memory medium EmptyDir would be
+    ## the minimum value between the SizeLimit specified
+    ## here and the sum of memory limits of all containers in a pod
+    ##
+    # sizeLimit: 300Mi
+
+image:
+  repository: grafana/grafana
+  pullPolicy: IfNotPresent
+  # tag: "10.0.0-ubuntu"
