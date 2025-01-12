@@ -1,0 +1,599 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otel-collector
+  namespace: monitoring
+  labels:
+    app: opentelemetry
+    component: otel-collector
+data:
+  config: |
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: ${env:MY_POD_IP}:4317
+          http:
+            endpoint: ${env:MY_POD_IP}:4318
+      k8s_cluster:
+        auth_type: serviceAccount
+        node_conditions_to_report:
+          - Ready
+          - MemoryPressure
+        allocatable_types_to_report:
+          - cpu
+          - memory
+    processors:
+      # normalize between prometheus and otel
+      resource/normalize:
+        attributes:
+          - key: instance
+            from_attribute: service.instance.id
+            action: insert
+          - key: job
+            from_attribute: service.name
+            action: insert
+      probabilistic_sampler:
+        hash_seed: 10
+        sampling_percentage: 5
+      batch:
+        timeout: 500ms
+        send_batch_max_size: 512
+        send_batch_size: 256
+      resource:
+        attributes:
+          - action: insert
+            from_attribute: k8s.pod.uid
+            key: service.instance.id
+      memory_limiter:
+        limit_mib: 4000
+        check_interval: 1s
+      k8sattributes:
+        extract:
+          metadata:
+            - k8s.namespace.name
+            - k8s.deployment.name
+            - k8s.statefulset.name
+            - k8s.daemonset.name
+            - k8s.cronjob.name
+            - k8s.job.name
+            - k8s.node.name
+            - k8s.pod.name
+            - k8s.pod.uid
+            - k8s.pod.start_time
+        passthrough: false
+        pod_association:
+          - sources:
+            - from: resource_attribute
+              name: k8s.pod.ip
+          - sources:
+            - from: resource_attribute
+              name: k8s.pod.uid
+          - sources:
+            - from: connection
+    extensions:
+      zpages: { }
+      health_check:
+        endpoint: "${env:MY_POD_IP}:13133"
+    exporters:
+      otlp/oteldb:
+        endpoint: otel-oteldb.faster.svc.cluster.local:4317
+        tls:
+          insecure: true
+    connectors:
+      spanmetrics:
+        histogram:
+          explicit:
+            buckets: [100us, 1ms, 2ms, 6ms, 10ms, 100ms, 250ms]
+        dimensions:
+          - name: http.method
+            default: GET
+          - name: http.status_code
+        exemplars:
+          enabled: true
+        exclude_dimensions: ['status.code']
+        dimensions_cache_size: 1000
+        aggregation_temporality: "AGGREGATION_TEMPORALITY_CUMULATIVE"
+        metrics_flush_interval: 15s
+        events:
+          enabled: true
+          dimensions:
+            - name: exception.type
+            - name: exception.message
+    service:
+      telemetry:
+        logs:
+          level: "info"
+          encoding: "json"
+          disable_stacktrace: true
+      extensions: [ zpages, health_check ]
+      pipelines:
+        traces/spanmetrics:
+          receivers: [ otlp ]
+          processors: [ probabilistic_sampler, memory_limiter, k8sattributes, resource, batch ]
+          exporters: [ spanmetrics ]
+        traces:
+          receivers: [ otlp ]
+          processors: [ memory_limiter, k8sattributes, resource, batch ]
+          exporters: [ otlp/oteldb ]
+        logs:
+          receivers: [ otlp ]
+          processors: [ memory_limiter, k8sattributes, resource, batch ]
+          exporters: [ otlp/oteldb ]
+        metrics:
+          receivers: [ otlp, k8s_cluster, spanmetrics ]
+          processors: [ memory_limiter, k8sattributes, resource, batch ]
+          exporters: [ otlp/oteldb ]
+        metrics/spanmetrics:
+          receivers: [ spanmetrics ]
+          processors: [ memory_limiter, batch ]
+          exporters: [ otlp/oteldb ]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: otel-collector
+  namespace: monitoring
+  labels:
+    app: opentelemetry
+    component: otel-collector
+spec:
+  ports:
+  - name: otlp-grpc # Default endpoint for OpenTelemetry gRPC receiver.
+    port: 4317
+    protocol: TCP
+    targetPort: 4317
+  - name: otlp-http # Default endpoint for OpenTelemetry HTTP receiver.
+    port: 4318
+    protocol: TCP
+    targetPort: 4318
+  - name: loki-grpc # Default endpoint for Loki gRPC receiver.
+    port: 3500
+    protocol: TCP
+    targetPort: 3500
+  - name: loki-http # Default endpoint for Loki HTTP receiver.
+    port: 3600
+    protocol: TCP
+    targetPort: 3600
+  - name: metrics # Default endpoint for querying metrics.
+    port: 8888
+  selector:
+    component: otel-collector
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: otel-collector
+  namespace: monitoring
+  labels:
+    app: opentelemetry
+    component: otel-collector
+spec:
+  selector:
+    matchLabels:
+      app: opentelemetry
+      component: otel-collector
+  minReadySeconds: 5
+  progressDeadlineSeconds: 120
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: opentelemetry
+        component: otel-collector
+    spec:
+      serviceAccountName: otel-collector-opentelemetry-collector
+      automountServiceAccountToken: true
+      containers:
+      - command:
+          - "/otelcol-contrib"
+          - "--config=/conf/otel-collector-config.yaml"
+        image: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:latest
+        name: otel-collector
+        resources:
+          limits:
+            cpu: "2"
+            memory: 2G
+          requests:
+            cpu: "2"
+            memory: 1G
+        livenessProbe:
+          httpGet:
+            path: /
+            port: health-check
+        ports:
+        - containerPort: 3500
+          name: "loki-grpc"
+        - containerPort: 3600
+          name: "loki-http"
+        - containerPort: 55679
+          name: "zpages"
+        - containerPort: 4317
+          name: "otlp-grpc"
+        - containerPort: 14250 # "jaeger-thrift-grpc"
+        - containerPort: 14268 # "jaeger-http"
+        - containerPort: 9411
+          name: "zipkin"
+        - containerPort: 8888
+          name: "metrics"
+        - containerPort: 13133
+          name: "health-check"
+        env:
+          - name: GOMAXPROCS
+            value: "2"
+          - name: MY_POD_IP
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: status.podIP
+        volumeMounts:
+        - name: otel-collector-config-vol
+          mountPath: /conf
+      volumes:
+        - configMap:
+            name: otel-collector
+            items:
+              - key: config
+                path: otel-collector-config.yaml
+          name: otel-collector-config-vol
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otel-agent
+  namespace: monitoring
+  labels:
+    app: opentelemetry
+    component: otel-agent
+data:
+  config: |
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: ${env:MY_POD_IP}:4317
+          http:
+            endpoint: ${env:MY_POD_IP}:4318
+      filelog:
+        include:
+          - /hostfs/var/log/pods/*/*/*.log
+        start_at: beginning
+        include_file_path: true
+        include_file_name: false
+        operators:
+          # Find out which format is used by kubernetes
+          - type: router
+            id: get-format
+            routes:
+              - output: parser-docker
+                expr: 'body matches "^\\{"'
+              - output: parser-crio
+                expr: 'body matches "^[^ Z]+ "'
+              - output: parser-containerd
+                expr: 'body matches "^[^ Z]+Z"'
+          # Parse CRI-O format
+          - type: regex_parser
+            id: parser-crio
+            regex:
+              '^(?P<time>[^ Z]+) (?P<stream>stdout|stderr) (?P<logtag>[^ ]*)
+                  ?(?P<log>.*)$'
+            output: extract_metadata_from_filepath
+            timestamp:
+              parse_from: attributes.time
+              layout_type: gotime
+              layout: '2006-01-02T15:04:05.999999999Z07:00'
+          # Parse CRI-Containerd format
+          - type: regex_parser
+            id: parser-containerd
+            regex:
+              '^(?P<time>[^ ^Z]+Z) (?P<stream>stdout|stderr) (?P<logtag>[^ ]*)
+                  ?(?P<log>.*)$'
+            output: extract_metadata_from_filepath
+            timestamp:
+              parse_from: attributes.time
+              layout: '%Y-%m-%dT%H:%M:%S.%LZ'
+          # Parse Docker format
+          - type: json_parser
+            id: parser-docker
+            output: extract_metadata_from_filepath
+            timestamp:
+              parse_from: attributes.time
+              # "2023-12-04T06:45:10.432536948Z"
+              layout: '%Y-%m-%dT%H:%M:%S.%LZ'
+          - type: move
+            from: attributes.log
+            to: body
+          # Extract metadata from file path
+          - type: regex_parser
+            id: extract_metadata_from_filepath
+            regex: '^.*\/(?P<namespace>[^_]+)_(?P<pod_name>[^_]+)_(?P<uid>[a-f0-9\-]+)\/(?P<container_name>[^\._]+)\/(?P<restart_count>\d+)\.log$'
+            parse_from: attributes["log.file.path"]
+            cache:
+              size: 128 # default maximum amount of Pods per Node is 110
+          # Rename attributes
+          - type: move
+            from: attributes.stream
+            to: attributes["log.iostream"]
+          - type: move
+            from: attributes.container_name
+            to: resource["k8s.container.name"]
+          - type: move
+            from: attributes.namespace
+            to: resource["k8s.namespace.name"]
+          - type: move
+            from: attributes.pod_name
+            to: resource["k8s.pod.name"]
+          - type: move
+            from: attributes.restart_count
+            to: resource["k8s.container.restart_count"]
+          - type: move
+            from: attributes.uid
+            to: resource["k8s.pod.uid"]
+      kubeletstats:
+        collection_interval: 15s
+        auth_type: 'serviceAccount'
+        endpoint: '${env:HOST_IP}:10250'
+        insecure_skip_verify: true
+        metric_groups:
+          - node
+          - pod
+          - container
+        extra_metadata_labels:
+          - container.id
+      hostmetrics:
+        root_path: /hostfs
+        collection_interval: 15s
+        scrapers:
+          cpu:
+          load:
+          memory:
+          network:
+      hostmetrics/disks:
+        root_path: /hostfs
+        collection_interval: 30s
+        scrapers:
+          disk:
+          filesystem:
+    processors:
+      batch:
+        timeout: 500ms
+        send_batch_max_size: 1024
+        send_batch_size: 512
+      memory_limiter:
+        limit_mib: 500
+        check_interval: 1s
+      k8sattributes:
+        auth_type: 'serviceAccount'
+        extract:
+          metadata: # extracted from the pod
+            - k8s.namespace.name
+            - k8s.pod.name
+            - k8s.pod.start_time
+            - k8s.pod.uid
+            - k8s.deployment.name
+            - k8s.node.name
+    extensions:
+      health_check:
+        endpoint: "${env:MY_POD_IP}:13133"
+      zpages: {}
+    exporters:
+      otlp:
+        endpoint: otel-collector.monitoring.svc.cluster.local:4317
+        tls:
+          insecure: true
+    service:
+      telemetry:
+        logs:
+          level: "info"
+          encoding: "json"
+          disable_stacktrace: true
+      extensions: [zpages, health_check]
+      pipelines:
+        metrics:
+          receivers: [kubeletstats, hostmetrics, hostmetrics/disks]
+          processors: [memory_limiter, batch]
+          exporters: [otlp]
+        logs:
+          receivers: [otlp, filelog]
+          processors: [k8sattributes, memory_limiter, batch]
+          exporters: [otlp]
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: otel-agent
+  namespace: monitoring
+  labels:
+    app: opentelemetry
+    component: otel-agent
+spec:
+  selector:
+    matchLabels:
+      app: opentelemetry
+      component: otel-agent
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: opentelemetry
+        component: otel-agent
+    spec:
+      hostPID: true
+      serviceAccountName: otel-collector-opentelemetry-collector
+      automountServiceAccountToken: true
+      tolerations:
+        - effect: NoSchedule
+          operator: Exists
+        - effect: NoExecute
+          operator: Exists
+        - effect: NoExecute
+          key: node.kubernetes.io/not-ready
+          operator: Exists
+        - effect: NoExecute
+          key: node.kubernetes.io/unreachable
+          operator: Exists
+        - effect: NoSchedule
+          key: node.kubernetes.io/disk-pressure
+          operator: Exists
+        - effect: NoSchedule
+          key: node.kubernetes.io/memory-pressure
+          operator: Exists
+        - effect: NoSchedule
+          key: node.kubernetes.io/pid-pressure
+          operator: Exists
+        - effect: NoSchedule
+          key: node.kubernetes.io/unschedulable
+          operator: Exists
+        - effect: NoSchedule
+          key: node.kubernetes.io/network-unavailable
+          operator: Exists
+      securityContext:
+        runAsNonRoot: false
+        runAsUser: 0
+      containers:
+        - command:
+            - "/otelcol-contrib"
+            - "--config=/conf/otel-collector-config.yaml"
+          image: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:latest
+          name: otel-agent
+          livenessProbe:
+            httpGet:
+              path: /
+              port: health-check
+          ports:
+            - containerPort: 55679
+              name: "zpages"
+            - containerPort: 4317
+              name: "otlp-grpc"
+            - containerPort: 13133
+              name: "health-check"
+          securityContext:
+            privileged: true
+            runAsNonRoot: false
+            runAsUser: 0
+          resources:
+            limits:
+              cpu: "2"
+              memory: 1Gi
+            requests:
+              cpu: 200m
+              memory: 512Mi
+          env:
+            - name: MY_POD_IP
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.podIP
+            - name: GOMAXPROCS
+              value: "2"
+            - name: K8S_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: HOST_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+          volumeMounts:
+            - name: otel-collector-config-vol
+              mountPath: /conf
+            - name: hostfs
+              mountPath: /hostfs
+              readOnly: true
+              mountPropagation: HostToContainer
+      volumes:
+        - name: hostfs
+          hostPath:
+            path: /
+        - configMap:
+            name: otel-agent
+            items:
+              - key: config
+                path: otel-collector-config.yaml
+          name: otel-collector-config-vol
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: otel-collector-opentelemetry-collector
+  namespace: monitoring
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: otel-collector-opentelemetry-collector
+  namespace: monitoring
+rules:
+  - apiGroups:
+      - ''
+    resources:
+      - events
+      - namespaces
+      - namespaces/status
+      - nodes
+      - nodes/spec
+      - nodes/stats
+      - nodes/proxy
+      - pods
+      - pods/status
+      - replicationcontrollers
+      - replicationcontrollers/status
+      - resourcequotas
+      - services
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - apps
+    resources:
+      - daemonsets
+      - deployments
+      - replicasets
+      - statefulsets
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - extensions
+    resources:
+      - daemonsets
+      - deployments
+      - replicasets
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - batch
+    resources:
+      - jobs
+      - cronjobs
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - autoscaling
+    resources:
+      - horizontalpodautoscalers
+    verbs:
+      - get
+      - list
+      - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: otel-collector-opentelemetry-collector
+  namespace: monitoring
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: otel-collector-opentelemetry-collector
+subjects:
+  - kind: ServiceAccount
+    name: otel-collector-opentelemetry-collector
+    namespace: monitoring

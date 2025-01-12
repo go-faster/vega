@@ -1,0 +1,25 @@
+apiVersion: "clickhouse.altinity.com/v1"
+kind: "ClickHouseInstallation"
+metadata:
+  name: "clickhouse"
+  namespace: "clickhouse"
+spec:
+  configuration:
+    users:
+      admin/password: admin
+      admin/profile: default
+      admin/quota: default
+      # readonly user has 'password' field specified, not 'password_sha256_hex' as admin user above
+      readonly/password: readonly_password
+      readonly/profile: readonly
+      readonly/quota: default
+    profiles:
+      readonly/readonly: 1
+    settings:
+      compression/case/method: zstd
+      disable_internal_dns_cache: 1
+    clusters:
+      - name: "default"
+        layout:
+          shardsCount: 1
+          replicasCount: 1
