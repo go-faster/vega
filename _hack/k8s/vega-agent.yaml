@@ -23,6 +23,11 @@ spec:
         - name: agent
           image: vega-agent
           imagePullPolicy: Never
+          env:
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: "grpc"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "http://otel-collector.monitoring.svc.cluster.local:4317"
           volumeMounts:
             - mountPath: /var/run/tetragon
               name: tetragon
