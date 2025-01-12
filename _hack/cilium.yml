@@ -5,6 +5,15 @@ encryption:
   nodeEncryption: false
 ingressController:
   enabled: true
+  loadbalancerMode: shared
+  default: true
+  enforceHttps: false
+  hostNetwork:
+    enabled: true
+    sharedListenerPort: 8080
+  service:
+    externalTrafficPolicy: null
+    type: ClusterIP
 hubble:
   tls:
     enabled: false

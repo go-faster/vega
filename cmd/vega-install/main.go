@@ -86,7 +86,7 @@ func run(ctx context.Context) error {
 			Install:         true,
 			Version:         "0.18.0",
 			Values:          file("oteldb.yml"),
-			Namespace:       "monitoring",
+			Namespace:       "faster",
 			CreateNamespace: true,
 			KubeConfig:      kubeConfig,
 		},

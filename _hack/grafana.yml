@@ -19,7 +19,10 @@ deploymentStrategy:
 serviceMonitor:
   enabled: true
 ingress:
-  enabled: false
+  enabled: true
+  ingressClassName: cilium
+  hosts:
+    - grafana.localhost
 env:
   GF_FEATURE_TOGGLES_ENABLE: tempoSearch,tempoServiceGraph,tempoApmTable,traceqlEditor
 datasources:

@@ -16,23 +16,8 @@ nodes:
         nodeRegistration:
           taints: []
   - role: worker
-    kubeadmConfigPatches:
-      - |
-        kind: JoinConfiguration
-        nodeRegistration:
-          name: "worker"
-          kubeletExtraArgs:
-            node-labels: "ingress-ready=true"
     extraPortMappings:
-      - containerPort: 30000
+      - containerPort: 8080
         hostPort: 80
-        listenAddress: 127.0.0.1
-        protocol: TCP
-      - containerPort: 30001
-        hostPort: 443
-        listenAddress: 127.0.0.1
-        protocol: TCP
-      - containerPort: 30002
-        hostPort: 15021
         listenAddress: 127.0.0.1
         protocol: TCP
