@@ -58,7 +58,7 @@ jobs:
           sha256sum --check cilium-linux-amd64.tar.gz.sha256sum
           sudo tar xzvfC cilium-linux-amd64.tar.gz /usr/local/bin
 
-      - name: Add helm repository for cilium
+      - name: Add helm repositories
         run: |
           helm repo add cilium https://helm.cilium.io
           helm repo add clickhouse-operator https://docs.altinity.com/clickhouse-operator/
