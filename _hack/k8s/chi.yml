@@ -9,10 +9,13 @@ spec:
       admin/password: admin
       admin/profile: default
       admin/quota: default
-      # readonly user has 'password' field specified, not 'password_sha256_hex' as admin user above
+      admin/networks/ip:
+        - 0.0.0.0/0
       readonly/password: readonly_password
       readonly/profile: readonly
       readonly/quota: default
+      readonly/networks/ip:
+        - 0.0.0.0/0
     profiles:
       readonly/readonly: 1
     settings:
