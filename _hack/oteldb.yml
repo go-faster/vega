@@ -57,11 +57,11 @@ ingress:
 
 resources:
   limits:
-    cpu: 1500m
-    memory: 128Mi
+    cpu: 2500m
+    memory: 512Mi
   requests:
     cpu: 100m
-    memory: 128Mi
+    memory: 256Mi
 
 env:
   - name: OTEL_LOG_LEVEL
