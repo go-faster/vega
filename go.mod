@@ -13,7 +13,7 @@ require (
 	github.com/go-faster/sdk v0.20.0
 	github.com/go-faster/tetragon v1.3.2
 	github.com/ogen-go/ent2ogen v0.0.0-20230913015246-1d588150cabc
-	github.com/ogen-go/ogen v1.8.1
+	github.com/ogen-go/ogen v1.9.0
 	github.com/spf13/cobra v1.8.1
 	github.com/stretchr/testify v1.10.0
 	go.opentelemetry.io/otel v1.34.0
@@ -180,7 +180,7 @@ require (
 	golang.org/x/term v0.28.0 // indirect
 	golang.org/x/text v0.21.0 // indirect
 	golang.org/x/time v0.8.0 // indirect
-	golang.org/x/tools v0.28.0 // indirect
+	golang.org/x/tools v0.29.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220609144429-65e65417b02f // indirect
 	google.golang.org/api v0.162.0 // indirect
 	google.golang.org/genproto v0.0.0-20240227224415-6ceb2ff114de // indirect
