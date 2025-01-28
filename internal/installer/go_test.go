@@ -5,10 +5,9 @@ import (
 	"os"
 	"testing"
 
+	"github.com/go-faster/sdk/race"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/go-faster/vega/internal/race"
 )
 
 func TestGoBuild_Run(t *testing.T) {
