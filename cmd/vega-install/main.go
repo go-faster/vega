@@ -100,6 +100,14 @@ func run(ctx context.Context) error {
 			CreateNamespace: true,
 			KubeConfig:      kubeConfig,
 		},
+		&installer.HelmUpgrade{
+			Name:            "queue",
+			Chart:           "oci://registry-1.docker.io/bitnamicharts/kafka",
+			Install:         true,
+			Namespace:       "kafka",
+			CreateNamespace: true,
+			KubeConfig:      kubeConfig,
+		},
 		&installer.KubeApply{
 			File:       file("k8s"),
 			KubeConfig: kubeConfig,
