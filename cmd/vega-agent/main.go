@@ -10,10 +10,9 @@ import (
 	"github.com/cilium/cilium/api/v1/observer"
 	"github.com/go-faster/errors"
 	"github.com/go-faster/sdk/app"
+	"github.com/go-faster/sdk/zctx"
 	"github.com/go-faster/tetragon/api/v1/tetragon"
-	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/metric"
-	"go.opentelemetry.io/otel/sdk/resource"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
@@ -24,6 +23,7 @@ import (
 
 func main() {
 	app.Run(func(ctx context.Context, lg *zap.Logger, m *app.Telemetry) error {
+		ctx = zctx.WithOpenTelemetryZap(ctx)
 		g, ctx := errgroup.WithContext(ctx)
 		g.Go(func() error {
 			<-ctx.Done()
@@ -146,17 +146,6 @@ func main() {
 		})
 		return g.Wait()
 	},
-		app.WithResource(func(ctx context.Context) (*resource.Resource, error) {
-			return resource.New(ctx,
-				resource.WithOS(),
-				resource.WithFromEnv(),
-				resource.WithTelemetrySDK(),
-				resource.WithHost(),
-				resource.WithProcess(),
-				resource.WithAttributes(
-					attribute.String("service.name", "vega.agent"),
-				),
-			)
-		}),
+		app.WithServiceName("vega.agent"),
 	)
 }

@@ -7,8 +7,7 @@ import (
 
 	"github.com/go-faster/errors"
 	"github.com/go-faster/sdk/app"
-	"go.opentelemetry.io/otel/attribute"
-	"go.opentelemetry.io/otel/sdk/resource"
+	"github.com/go-faster/sdk/zctx"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 
@@ -17,6 +16,7 @@ import (
 
 func main() {
 	app.Run(func(ctx context.Context, lg *zap.Logger, m *app.Telemetry) error {
+		ctx = zctx.WithOpenTelemetryZap(ctx)
 		srv, err := oas.NewServer(oas.UnimplementedHandler{})
 		if err != nil {
 			return errors.Wrap(err, "create server")
@@ -40,17 +40,6 @@ func main() {
 		})
 		return g.Wait()
 	},
-		app.WithResource(func(ctx context.Context) (*resource.Resource, error) {
-			return resource.New(ctx,
-				resource.WithOS(),
-				resource.WithFromEnv(),
-				resource.WithTelemetrySDK(),
-				resource.WithHost(),
-				resource.WithProcess(),
-				resource.WithAttributes(
-					attribute.String("service.name", "vega"),
-				),
-			)
-		}),
+		app.WithServiceName("vega"),
 	)
 }

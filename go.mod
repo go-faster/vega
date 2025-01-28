@@ -10,7 +10,7 @@ require (
 	github.com/cilium/cilium v1.17.0-rc.2
 	github.com/go-faster/errors v0.7.1
 	github.com/go-faster/jx v1.1.0
-	github.com/go-faster/sdk v0.20.0
+	github.com/go-faster/sdk v0.21.0
 	github.com/go-faster/tetragon v1.3.2
 	github.com/ogen-go/ent2ogen v0.0.0-20230913015246-1d588150cabc
 	github.com/ogen-go/ogen v1.9.0
