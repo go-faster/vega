@@ -28,6 +28,8 @@ spec:
               value: "grpc"
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
               value: "http://otel-collector.monitoring.svc.cluster.local:4317"
+            - name: KAFKA_ADDR
+              value: "queue-kafka.kafka.svc.cluster.local:9092"
           volumeMounts:
             - mountPath: /var/run/tetragon
               name: tetragon
