@@ -23,14 +23,34 @@ func run(ctx context.Context) error {
 			Max: 6,
 			Steps: []installer.Step{
 				installer.BuildBinary("vega-agent"),
+				installer.BuildBinary("vega-ingest"),
 				installer.BuildBinary("v"),
 				installer.BuildBinary("vega"),
 			},
 		},
-		&installer.Docker{
-			Tags:    []string{"vega-agent"},
-			File:    "agent.Dockerfile",
-			Context: ".",
+		&installer.Parallel{
+			Max: 6,
+			Steps: []installer.Step{
+				installer.BuildBinary("vega-agent"),
+				installer.BuildBinary("vega-ingest"),
+				installer.BuildBinary("v"),
+				installer.BuildBinary("vega"),
+			},
+		},
+		&installer.Parallel{
+			Max: 6,
+			Steps: []installer.Step{
+				&installer.Docker{
+					Tags:    []string{"vega-agent"},
+					File:    "agent.Dockerfile",
+					Context: ".",
+				},
+				&installer.Docker{
+					Tags:    []string{"vega-ingest"},
+					File:    "ingest.Dockerfile",
+					Context: ".",
+				},
+			},
 		},
 		&installer.Kind{
 			Name:       "vega",
@@ -39,7 +59,7 @@ func run(ctx context.Context) error {
 		},
 		&installer.KindLoad{
 			Name:       "vega",
-			Images:     []string{"vega-agent"},
+			Images:     []string{"vega-agent", "vega-ingest"},
 			KubeConfig: kubeConfig,
 		},
 		&installer.KubeApply{

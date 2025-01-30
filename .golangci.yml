@@ -125,5 +125,8 @@ issues:
       linters: [ gosec ]
       text: "G204" # Subprocess launched with variable
 
+    - linters: [ gosec ]
+      text: "G115" # uint32 -> uint16
+
     - linters: [ revive ]
       text: "comment on exported const .+ should be of the form"

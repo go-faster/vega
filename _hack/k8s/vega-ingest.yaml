@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vega-ingest
+  namespace: vega
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vega-ingest
+  template:
+    metadata:
+      labels:
+        app: vega-ingest
+    spec:
+      containers:
+        - name: ingest
+          image: vega-ingest
+          imagePullPolicy: Never
+          env:
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: "grpc"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "http://otel-collector.monitoring.svc.cluster.local:4317"
+            - name: KAFKA_ADDR
+              value: "queue-kafka.kafka.svc.cluster.local:9092"
+            - name: CLICKHOUSE_ADDR
+              value: "chi-clickhouse-default-0-0.clickhouse:9000"
+            - name: CLICKHOUSE_USER
+              value: "admin"
+            - name: CLICKHOUSE_PASSWORD
+              value: "admin"
+            - name: CLICKHOUSE_DB
+              value: "default"

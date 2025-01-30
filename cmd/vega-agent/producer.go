@@ -2,71 +2,19 @@ package main
 
 import (
 	"context"
-	"os"
-	"strings"
 	"sync"
 	"time"
 
 	"github.com/go-faster/errors"
 	"github.com/segmentio/kafka-go"
-	"github.com/segmentio/kafka-go/sasl/plain"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/metric"
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
+
+	"github.com/go-faster/vega/internal/kfk"
 )
-
-// KafkaAddrs returns kafka addresses from environment variable.
-func KafkaAddrs() []string {
-	v := os.Getenv("KAFKA_ADDR")
-	var list []string
-	for _, s := range strings.Split(v, ",") {
-		s = strings.TrimSpace(s)
-		if s != "" {
-			list = append(list, s)
-		}
-	}
-	return list
-}
-
-func KafkaDialer() *kafka.Dialer {
-	d := &kafka.Dialer{
-		KeepAlive: time.Second * 10,
-		Timeout:   time.Second * 3,
-	}
-	if user := os.Getenv("KAFKA_USER"); user != "" {
-		d.SASLMechanism = plain.Mechanism{
-			Username: user,
-			Password: os.Getenv("KAFKA_PASSWORD"),
-		}
-	}
-	return d
-}
-
-// KafkaTransport from environment.
-func KafkaTransport() *kafka.Transport {
-	d := KafkaDialer()
-	return &kafka.Transport{
-		Dial:        d.DialFunc,
-		DialTimeout: d.Timeout,
-		SASL:        d.SASLMechanism,
-	}
-}
-
-// KafkaBalancer from environment.
-func KafkaBalancer() kafka.Balancer {
-	switch os.Getenv("KAFKA_BALANCER") {
-	case "", "least_bytes":
-		return &kafka.LeastBytes{}
-	case "hash":
-		return &kafka.Hash{}
-	case "round_robin":
-		return &kafka.RoundRobin{}
-	default:
-		panic("unknown balancer: " + os.Getenv("KAFKA_BALANCER"))
-	}
-}
 
 type KafkaProducer struct {
 	addrs          []string
@@ -97,8 +45,8 @@ func (k *KafkaProducer) newWriter(topic string) *kafka.Writer {
 
 		Addr:      kafka.TCP(k.addrs...),
 		Topic:     topic,
-		Balancer:  KafkaBalancer(),
-		Transport: KafkaTransport(),
+		Balancer:  kfk.KafkaBalancer(),
+		Transport: kfk.Transport(),
 
 		Logger: fnLogger(func(s string, i ...interface{}) {
 			lg.Sugar().Debugf(s, i...)
@@ -134,7 +82,7 @@ func (f fnLogger) Printf(s string, i ...interface{}) {
 }
 
 func NewKafkaProducer(lg *zap.Logger, provider metric.MeterProvider) (*KafkaProducer, error) {
-	addrs := KafkaAddrs()
+	addrs := kfk.Addrs()
 	lg.Info("Initializing kafka producer",
 		zap.Strings("addrs", addrs),
 		zap.Int("addrs.count", len(addrs)),
