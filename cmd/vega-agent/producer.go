@@ -77,22 +77,18 @@ type KafkaProducer struct {
 	messagesSent   metric.Int64Counter
 }
 
-func (k *KafkaProducer) writer(topic string) (*kafka.Writer, error) {
+func (k *KafkaProducer) writer(topic string) *kafka.Writer {
 	k.mux.Lock()
 	defer k.mux.Unlock()
 	writer, ok := k.writers[topic]
 	if !ok {
-		var err error
-		writer, err = k.newWriter(topic)
-		if err != nil {
-			return nil, errors.Wrap(err, "create kafka writer")
-		}
+		writer = k.newWriter(topic)
 		k.writers[topic] = writer
 	}
-	return writer, nil
+	return writer
 }
 
-func (k *KafkaProducer) newWriter(topic string) (*kafka.Writer, error) {
+func (k *KafkaProducer) newWriter(topic string) *kafka.Writer {
 	lg := k.lg.Named(topic)
 	return &kafka.Writer{
 		Async:        true,
@@ -128,7 +124,7 @@ func (k *KafkaProducer) newWriter(topic string) (*kafka.Writer, error) {
 				)
 			}
 		},
-	}, nil
+	}
 }
 
 type fnLogger func(string, ...interface{})
@@ -164,15 +160,11 @@ func NewKafkaProducer(lg *zap.Logger, provider metric.MeterProvider) (*KafkaProd
 }
 
 func (k *KafkaProducer) Produce(ctx context.Context, topic string, msg proto.Message) error {
-	writer, err := k.writer(topic)
-	if err != nil {
-		return errors.Wrap(err, "get kafka writer")
-	}
 	data, err := proto.Marshal(msg)
 	if err != nil {
 		return errors.Wrap(err, "marshal message")
 	}
-	return writer.WriteMessages(ctx,
+	return k.writer(topic).WriteMessages(ctx,
 		kafka.Message{
 			Value: data,
 		},
