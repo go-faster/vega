@@ -147,6 +147,7 @@ sidecar:
     enabled: true
 
 image:
-  repository: grafana/grafana
+  registry: ghcr.io
+  repository: go-faster/grafana
   pullPolicy: IfNotPresent
-  # tag: "10.0.0-ubuntu"
+  tag: "11.5.0-pre"

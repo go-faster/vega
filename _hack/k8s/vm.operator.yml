@@ -1,0 +1,132 @@
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMCluster
+metadata:
+  name: cluster
+  namespace: vm
+spec:
+  # Add fields here
+  retentionPeriod: "1"
+  vmstorage:
+    replicaCount: 1
+  vmselect:
+    replicaCount: 1
+  vminsert:
+    replicaCount: 1
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMAgent
+metadata:
+  name: agent
+  namespace: vm
+spec:
+  selectAllByDefault: true
+  replicaCount: 1
+  remoteWrite:
+    - url: "http://insert.vm.svc.cluster.local:8480/insert/0/prometheus/"
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMNodeScrape
+metadata:
+  name: cadvisor-metrics
+  namespace: vm
+spec:
+  scheme: "https"
+  tlsConfig:
+    insecureSkipVerify: true
+    caFile: "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+  bearerTokenFile: "/var/run/secrets/kubernetes.io/serviceaccount/token"
+  relabelConfigs:
+    - action: labelmap
+      regex: __meta_kubernetes_node_label_(.+)
+    - targetLabel: __address__
+      replacement: kubernetes.default.svc:443
+    - sourceLabels: [__meta_kubernetes_node_name]
+      regex: (.+)
+      targetLabel: __metrics_path__
+      replacement: /api/v1/nodes/$1/proxy/metrics/cadvisor
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMNodeScrape
+metadata:
+  name: kubernetes-nodes
+  namespace: vm
+spec:
+  scheme: "https"
+  tlsConfig:
+    insecureSkipVerify: true
+    caFile: "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+  bearerTokenFile: "/var/run/secrets/kubernetes.io/serviceaccount/token"
+  relabelConfigs:
+    - action: labelmap
+      regex: __meta_kubernetes_node_label_(.+)
+    - target_label: __address__
+      replacement: kubernetes.default.svc:443
+    - source_labels: [__meta_kubernetes_node_name]
+      regex: (.+)
+      target_label: __metrics_path__
+      replacement: /api/v1/nodes/$1/proxy/metrics
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMPodScrape
+metadata:
+  name: all-scrape
+  namespace: vm
+spec:
+  podMetricsEndpoints:
+    - scheme: http
+      relabelConfigs:
+        - sourceLabels:
+            [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+          action: keep
+          regex: "true"
+        - sourceLabels:
+            [__meta_kubernetes_pod_annotation_prometheus_io_scheme]
+          action: replace
+          targetLabel: __scheme__
+          regex: (https?)
+        - sourceLabels:
+            [__meta_kubernetes_pod_annotation_prometheus_io_path]
+          action: replace
+          targetLabel: __metrics_path__
+          regex: (.+)
+        - sourceLabels:
+            [
+              __address__,
+              __meta_kubernetes_pod_annotation_prometheus_io_port,
+            ]
+          action: replace
+          targetLabel: __address__
+          regex: ([^:]+)(?::\d+)?;(\d+)
+          replacement: $1:$2
+  selector: {}
+  namespaceSelector:
+    any: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    meta.helm.sh/release-name: vm
+    meta.helm.sh/release-namespace: vm
+    service.cilium.io/global: "true"
+  labels:
+    app.kubernetes.io/component: monitoring
+    app.kubernetes.io/instance: cluster
+    app.kubernetes.io/name: vminsert
+  name: insert
+  namespace: vm
+spec:
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+    - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+    - name: http
+      port: 8480
+      protocol: TCP
+      targetPort: http
+  selector:
+    app.kubernetes.io/name: vminsert
+  sessionAffinity: None
+  type: ClusterIP
