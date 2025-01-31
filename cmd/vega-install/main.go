@@ -127,6 +127,7 @@ func run(ctx context.Context) error {
 			Namespace:       "kafka",
 			CreateNamespace: true,
 			KubeConfig:      kubeConfig,
+			Values:          file("kafka.yml"),
 		},
 		&installer.KubeApply{
 			File:       file("k8s"),
