@@ -1,0 +1,94 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: simon
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simon-client
+  namespace: simon
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      vega.app: simon.client
+  template:
+    metadata:
+      labels:
+        vega.app: simon.client
+    spec:
+      containers:
+        - name: ingest
+          image: ghcr.io/go-faster/simon:0.7.0
+          args: ["client"]
+          env:
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: "grpc"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "http://otel-collector.monitoring.svc.cluster.local:4317"
+            - name: OTEL_LOG_LEVEL
+              value: "debug"
+            - name: OTEL_EXPORTER_OTLP_INSECURE
+              value: "true"
+            - name: OTEL_GO_X_DEPRECATED_RUNTIME_METRICS
+              value: "false"
+            - name: OTEL_METRIC_EXPORT_INTERVAL
+              value: "1000"
+            - name: OTEL_METRIC_EXPORT_TIMEOUT
+              value: "500"
+            - name: SERVER_ADDR
+              value: http://simon-server:8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simon-server
+  namespace: simon
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      vega.app: simon.server
+  template:
+    metadata:
+      labels:
+        vega.app: simon.server
+    spec:
+      containers:
+        - name: ingest
+          image: ghcr.io/go-faster/simon:0.7.0
+          args: ["server"]
+          env:
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: "grpc"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "http://otel-collector.monitoring.svc.cluster.local:4317"
+            - name: OTEL_LOG_LEVEL
+              value: "debug"
+            - name: OTEL_EXPORTER_OTLP_INSECURE
+              value: "true"
+            - name: OTEL_GO_X_DEPRECATED_RUNTIME_METRICS
+              value: "false"
+            - name: OTEL_METRIC_EXPORT_INTERVAL
+              value: "1000"
+            - name: OTEL_METRIC_EXPORT_TIMEOUT
+              value: "500"
+            - name: HTTP_ADDR
+              value: "0.0.0.0:8080"
+---
+# service for simon-server
+apiVersion: v1
+kind: Service
+metadata:
+  name: simon-server
+  namespace: simon
+spec:
+  selector:
+    vega.app: simon.server
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      name: "http"
