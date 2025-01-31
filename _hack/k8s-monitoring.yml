@@ -1,0 +1,37 @@
+cluster:
+  name: vega
+
+destinations:
+  - name: otelcol
+    type: otlp
+    protocol: grpc
+    url: "http://otel-collector.monitoring.svc.cluster.local:4317"
+    tls: {insecure: true}
+    metrics: { enabled: true }
+    logs:    { enabled: true }
+    traces:  { enabled: true }
+
+clusterMetrics:
+  enabled: true
+clusterEvents:
+  enabled: true
+podLogs:
+  enabled: true
+applicationObservability:
+  receivers:
+    otlp:
+      grpc:
+        enabled: true
+autoInstrumentation:
+  enabled: true
+annotationAutodiscovery:
+  enabled: true
+prometheusOperatorObjects:
+  enabled: true
+
+alloy-metrics:
+  enabled: true
+alloy-singleton:
+  enabled: true
+alloy-logs:
+  enabled: true

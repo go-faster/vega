@@ -121,6 +121,15 @@ func run(ctx context.Context) error {
 			KubeConfig:      kubeConfig,
 		},
 		&installer.HelmUpgrade{
+			Name:            "monitoring",
+			Chart:           "grafana/k8s-monitoring",
+			Install:         true,
+			Values:          file("k8s-monitoring.yml"),
+			Namespace:       "monitoring",
+			CreateNamespace: true,
+			KubeConfig:      kubeConfig,
+		},
+		&installer.HelmUpgrade{
 			Name:            "queue",
 			Chart:           "oci://registry-1.docker.io/bitnamicharts/kafka",
 			Install:         true,
