@@ -26,7 +26,7 @@ func main() {
 			return errors.Wrap(err, "init")
 		}
 		return a.Run(ctx)
-	})
+	}, app.WithServiceName("vega.ingest"))
 }
 
 type App struct {
