@@ -104,7 +104,7 @@ func run(ctx context.Context) error {
 			Name:            "otel",
 			Chart:           "faster/oteldb",
 			Install:         true,
-			Version:         "0.18.0",
+			Version:         "0.19.1",
 			Values:          file("oteldb.yml"),
 			Namespace:       "faster",
 			CreateNamespace: true,
