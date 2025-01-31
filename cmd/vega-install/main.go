@@ -31,15 +31,6 @@ func run(ctx context.Context) error {
 		&installer.Parallel{
 			Max: 6,
 			Steps: []installer.Step{
-				installer.BuildBinary("vega-agent"),
-				installer.BuildBinary("vega-ingest"),
-				installer.BuildBinary("v"),
-				installer.BuildBinary("vega"),
-			},
-		},
-		&installer.Parallel{
-			Max: 6,
-			Steps: []installer.Step{
 				&installer.Docker{
 					Tags:    []string{"vega-agent"},
 					File:    "agent.Dockerfile",
