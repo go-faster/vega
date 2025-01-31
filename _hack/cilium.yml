@@ -72,10 +72,5 @@ pprof:
 k8sServiceHost: vega-control-plane
 k8sServicePort: 6443
 ipv4NativeRoutingCIDR: 10.0.0.0/8
-bpf:
-  masquerade: true
-  hostLegacyRouting: false
-  hostRouting: false
-  tproxy: true
 tunnelProtocol: vxlan
 routingMode: tunnel

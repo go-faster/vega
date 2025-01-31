@@ -13,6 +13,7 @@ grafana.ini:
     enabled: true
     org_role: Admin
   auth.disable_login_form: true
+  users.allow_sign_up: false
 deploymentStrategy:
   type: Recreate
 
@@ -91,6 +92,21 @@ datasources:
         url: http://otel-oteldb.faster.svc.cluster.local:9090
         uid: prometheus
 
+      - name: "ClickHouse"
+        type: grafana-clickhouse-datasource
+        access: proxy
+        orgId: 1
+        uid: clickhouse
+        jsonData:
+          defaultDatabase: default
+          port: 9000
+          host: chi-clickhouse-default-0-0.clickhouse
+          username: admin
+          tlsSkipVerify: false
+
+        secureJsonData:
+          password: admin
+
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
@@ -120,6 +136,15 @@ persistence:
     ## here and the sum of memory limits of all containers in a pod
     ##
     # sizeLimit: 300Mi
+
+plugins:
+  - grafana-clickhouse-datasource
+
+sidecar:
+  dashboards:
+    enabled: true
+  datasources:
+    enabled: true
 
 image:
   repository: grafana/grafana
