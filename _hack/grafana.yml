@@ -35,6 +35,12 @@ datasources:
         url: http://vmselect-cluster.vm.svc.cluster.local:8481/select/0/prometheus
         uid: victoria
 
+      - name: VictoriaLogs
+        type: victoriametrics-logs-datasource
+        access: proxy
+        url: http://vlogs-logs.vm.svc.cluster.local:9428
+        uid: victoria-logs
+
       - name: Pyroscope
         type: grafana-pyroscope-datasource
         url: http://pyroscope.monitoring.svc.cluster.local.:4040/
@@ -187,6 +193,7 @@ persistence:
 
 plugins:
   - grafana-clickhouse-datasource
+  - victoriametrics-logs-datasource
 
 sidecar:
   dashboards:

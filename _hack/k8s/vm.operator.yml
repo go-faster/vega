@@ -130,3 +130,25 @@ spec:
     app.kubernetes.io/name: vminsert
   sessionAffinity: None
   type: ClusterIP
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VLogs
+metadata:
+  name: logs
+  namespace: vm
+spec:
+  retentionPeriod: "12"
+  removePvcAfterDelete: true
+  storage:
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 50Gi
+  resources:
+    requests:
+      memory: 500Mi
+      cpu: 500m
+    limits:
+      memory: 10Gi
+      cpu: 5
