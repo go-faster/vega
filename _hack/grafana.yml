@@ -147,7 +147,7 @@ sidecar:
     enabled: true
 
 image:
-  registry: ghcr.io
-  repository: go-faster/grafana
+  # registry: ghcr.io
+  repository: grafana/grafana-oss
   pullPolicy: IfNotPresent
-  tag: "11.5.0-pre"
+  tag: "11.5.0"
