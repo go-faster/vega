@@ -3,9 +3,10 @@ package main
 import (
 	"bytes"
 	"context"
+	"github.com/nats-io/nats.go"
 	"io"
 	"math/rand"
-	"sync/atomic"
+	"os"
 	"time"
 
 	"github.com/ClickHouse/ch-go"
@@ -13,12 +14,9 @@ import (
 	"github.com/go-faster/errors"
 	"github.com/go-faster/sdk/app"
 	"github.com/segmentio/kafka-go"
-	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/metric"
 	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
-
-	"github.com/go-faster/vega/internal/kfk"
 )
 
 type Entry[T any] struct {
@@ -37,7 +35,6 @@ type Table interface {
 }
 
 type Metrics struct {
-	ParseCount  metric.Int64Counter `name:"parse.count"`
 	ParseErrors metric.Int64Counter `name:"parse.errors_count"`
 
 	EntriesRead  metric.Int64Counter `name:"entries.read"`
@@ -50,8 +47,7 @@ type Metrics struct {
 type IngesterOptions[M proto.Message, T Table] struct {
 	Log       *zap.Logger
 	Telemetry *app.Telemetry
-	Topic     string
-	Group     string
+	Subject   string
 	Servers   []Server
 	TableName string
 	DDL       string
@@ -67,8 +63,7 @@ func NewIngester[M proto.Message, T Table](opt IngesterOptions[M, T]) *Ingester[
 		log:       opt.Log,
 		telemetry: opt.Telemetry,
 		entries:   make(chan *Entry[M], 1000),
-		topic:     opt.Topic,
-		group:     opt.Group,
+		subject:   opt.Subject,
 
 		initializeDB: true,
 		ddl:          opt.DDL,
@@ -87,9 +82,7 @@ type Ingester[M proto.Message, T Table] struct {
 	telemetry *app.Telemetry
 
 	entries chan *Entry[M]
-	reader  atomic.Pointer[kafka.Reader]
-	topic   string
-	group   string
+	subject string
 
 	initializeDB bool
 	ddl          string
@@ -142,98 +135,58 @@ func (a *Ingester[M, T]) setupClickHouse(ctx context.Context, s Server) error {
 func (a *Ingester[M, T]) Setup(ctx context.Context) error {
 	for _, server := range a.servers {
 		if err := a.setupClickHouse(ctx, server); err != nil {
-			return errors.Wrapf(err, "setup clickhouse %s %s", a.topic, server.Addr)
+			return errors.Wrapf(err, "setup clickhouse %s %s", a.subject, server.Addr)
 		}
 	}
 	return nil
 }
-func (a *Ingester[M, T]) entry(msg kafka.Message) (*Entry[M], error) {
+func (a *Ingester[M, T]) entry(msg *nats.Msg) (*Entry[M], error) {
 	f := a.newMessage()
 
-	if err := proto.Unmarshal(msg.Value, f); err != nil {
+	if err := proto.Unmarshal(msg.Data, f); err != nil {
 		return nil, errors.Wrap(err, "unmarshal entries")
 	}
 
 	e := &Entry[M]{
-		Raw: bytes.Clone(msg.Value),
+		Raw: bytes.Clone(msg.Data),
 		Res: f,
 	}
 
 	return e, nil
 }
 
-type fnLogger func(string, ...interface{})
-
-func (f fnLogger) Printf(s string, i ...interface{}) {
-	f(s, i...)
-}
-
-func kafkaAttributes(m kafka.Message, stat kafka.ReaderStats) []attribute.KeyValue {
-	return []attribute.KeyValue{
-		attribute.String("kafka.client_id", stat.ClientID),
-		attribute.String("kafka.topic", m.Topic),
-		attribute.Int("kafka.partition", m.Partition),
-	}
-}
-
 func (a *Ingester[M, T]) Consume(ctx context.Context) error {
-	const (
-		kafkaMinSizeBytes = 1014 * 25        // 25kb
-		kafkaMaxSizeBytes = 1024 * 1024 * 10 // 10 mb
-		kafkaMaxWait      = 3 * time.Second
-	)
-
-	lg := a.log.Named(a.topic)
-	readerConfig := kafka.ReaderConfig{
-		Topic:    a.topic,
-		Brokers:  kfk.Addrs(),
-		Dialer:   kfk.Dialer(),
-		GroupID:  a.group,
-		MinBytes: kafkaMinSizeBytes,
-		MaxBytes: kafkaMaxSizeBytes,
-		MaxWait:  kafkaMaxWait,
-		Logger: fnLogger(func(s string, i ...interface{}) {
-			lg.Sugar().Debugf(s, i...)
-		}),
-		ErrorLogger: fnLogger(func(s string, i ...interface{}) {
-			lg.Sugar().Errorf(s, i...)
-		}),
+	nc, err := nats.Connect(os.Getenv("NATS_URL"))
+	if err != nil {
+		return errors.Wrap(err, "connect")
 	}
-	a.log.Info("Reader config",
-		zap.Strings("brokers", readerConfig.Brokers),
-		zap.String("topic", readerConfig.Topic),
-		zap.String("group_id", readerConfig.GroupID),
-		zap.Int("min_bytes", readerConfig.MinBytes),
-		zap.Int("max_bytes", readerConfig.MaxBytes),
-		zap.Duration("max_wait", readerConfig.MaxWait),
-	)
-	r := kafka.NewReader(readerConfig)
-	a.reader.Store(r)
 	defer func() {
-		if err := a.reader.Load().Close(); err != nil {
-			lg.Error("Close kafka reader", zap.Error(err))
-		}
+		nc.Close()
 	}()
 
-	for {
-		msg, err := r.FetchMessage(ctx)
-		if ctx.Err() != nil {
-			return ctx.Err()
-		}
-		if err != nil {
-			return errors.Wrap(err, "next")
-		}
+	subscription, err := nc.Subscribe(a.subject, func(msg *nats.Msg) {
 		e, err := a.entry(msg)
 		if err != nil {
-			return errors.Wrap(err, "entry parse")
+			a.metrics.ParseErrors.Add(ctx, 1)
+			return
 		}
 		a.metrics.EntriesRead.Add(ctx, 1)
-		a.metrics.OffsetRead.Observe(msg.Offset, metric.WithAttributes(kafkaAttributes(msg, a.reader.Load().Stats())...))
 		select {
 		case a.entries <- e:
 		case <-ctx.Done():
-			return ctx.Err()
+			return
 		}
+	})
+	if err != nil {
+		return errors.Wrap(err, "subscribe")
+	}
+
+	select {
+	case <-ctx.Done():
+		if err := subscription.Drain(); err != nil {
+			return errors.Wrap(err, "drain")
+		}
+		return ctx.Err()
 	}
 }
 
@@ -279,7 +232,6 @@ func (a *Ingester[M, T]) Ingest(ctx context.Context) error {
 			return errors.Wrap(err, "clickhouse")
 		}
 
-		var latest kafka.Message
 		if err := db.Do(ctx, ch.Query{
 			Body:  t.Insert(),
 			Input: t.Input(),
@@ -297,9 +249,6 @@ func (a *Ingester[M, T]) Ingest(ctx context.Context) error {
 							a.log.Warn("Append entry",
 								zap.Error(err),
 							)
-						}
-						if e.Message.Offset > latest.Offset {
-							latest = e.Message
 						}
 					case <-ctx.Done():
 						return ctx.Err()
@@ -321,13 +270,6 @@ func (a *Ingester[M, T]) Ingest(ctx context.Context) error {
 		}
 		if err := db.Close(); err != nil {
 			return errors.Wrap(err, "close")
-		}
-		if latest.Offset > 0 {
-			// Committing only after query is finished.
-			if err := a.reader.Load().CommitMessages(ctx, latest); err != nil {
-				return errors.Wrap(err, "commit kafka offset")
-			}
-			a.metrics.OffsetCommited.Observe(latest.Offset, metric.WithAttributes(kafkaAttributes(latest, a.reader.Load().Stats())...))
 		}
 	}
 }

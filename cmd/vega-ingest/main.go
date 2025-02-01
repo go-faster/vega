@@ -141,8 +141,7 @@ func (a *App) initIngesters() {
 			Telemetry: a.telemetry,
 			Servers:   a.servers,
 			TableName: tetragonName,
-			Group:     "vega.ingest." + tetragonName,
-			Topic:     tetragonName,
+			Subject:   tetragonName,
 			DDL:       sec.NewDDL(tetragonName),
 			NewTable:  sec.NewTable,
 			AppendEntry: func(t *sec.Table, e *Entry[*tetragon.GetEventsResponse]) error {
@@ -158,8 +157,7 @@ func (a *App) initIngesters() {
 			Telemetry: a.telemetry,
 			Servers:   a.servers,
 			TableName: hubbleName,
-			Group:     "vega.ingest." + hubbleName,
-			Topic:     hubbleName,
+			Subject:   hubbleName,
 			DDL:       flow.NewDDL(hubbleName),
 			NewTable:  flow.NewTable,
 			AppendEntry: func(t *flow.Table, e *Entry[*observer.GetFlowsResponse]) error {

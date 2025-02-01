@@ -25,7 +25,7 @@ func main() {
 	app.Run(func(ctx context.Context, lg *zap.Logger, m *app.Telemetry) error {
 		ctx = zctx.WithOpenTelemetryZap(ctx)
 		meter := m.MeterProvider().Meter("vega-agent")
-		kafkaProducer, err := NewKafkaProducer(lg, m.MeterProvider())
+		kafkaProducer, err := NewProducer(lg, m.MeterProvider())
 		if err != nil {
 			return errors.Wrap(err, "create kafka producer")
 		}
@@ -86,7 +86,7 @@ func main() {
 					zap.String("node", resp.NodeName),
 				)
 				flowsCount.Add(ctx, 1)
-				if err := kafkaProducer.Produce(ctx, "hubble", resp); err != nil {
+				if err := kafkaProducer.Produce("hubble", resp); err != nil {
 					return errors.Wrap(err, "produce")
 				}
 			}
@@ -145,7 +145,7 @@ func main() {
 					zap.String("node", resp.NodeName),
 				)
 				eventsCount.Add(ctx, 1)
-				if err := kafkaProducer.Produce(ctx, "tetragon", resp); err != nil {
+				if err := kafkaProducer.Produce("tetragon", resp); err != nil {
 					return errors.Wrap(err, "produce")
 				}
 			}
