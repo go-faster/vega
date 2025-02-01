@@ -32,7 +32,7 @@ datasources:
     datasources:
       - name: VictoriaMetrics
         type: prometheus
-        url: http://vmselect-cluster.monitoring.svc.cluster.local:8481/select/0/prometheus
+        url: http://vmselect-cluster.vm.svc.cluster.local:8481/select/0/prometheus
         uid: victoria
 
       - name: "oteldb: TraceQL"
