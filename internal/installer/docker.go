@@ -3,11 +3,11 @@ package installer
 import (
 	"bufio"
 	"context"
-	"golang.org/x/sync/errgroup"
 	"os"
 	"os/exec"
 
 	"github.com/go-faster/errors"
+	"golang.org/x/sync/errgroup"
 )
 
 type Docker struct {

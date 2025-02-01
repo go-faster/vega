@@ -3,14 +3,14 @@ package main
 import (
 	"context"
 	"crypto/tls"
+	"net/http"
+
 	"github.com/go-faster/errors"
 	"github.com/go-faster/sdk/app"
 	"github.com/go-faster/sdk/zctx"
-	"go.uber.org/zap"
-	"net/http"
-
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
+	"go.uber.org/zap"
 )
 
 func main() {
@@ -24,7 +24,7 @@ func main() {
 			Creds:  credentials.NewStaticV4(accessKeyID, secretAccessKey, ""),
 			Secure: true,
 			Transport: &http.Transport{
-				TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+				TLSClientConfig: &tls.Config{InsecureSkipVerify: true}, // #nosec G402
 			},
 		})
 		if err != nil {

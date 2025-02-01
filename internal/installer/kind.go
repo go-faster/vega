@@ -3,10 +3,10 @@ package installer
 import (
 	"bytes"
 	"context"
-	"github.com/cenkalti/backoff/v4"
 	"os"
 	"os/exec"
 
+	"github.com/cenkalti/backoff/v4"
 	"github.com/go-faster/errors"
 )
 
