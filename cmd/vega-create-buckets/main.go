@@ -51,6 +51,6 @@ func main() {
 
 		return nil
 	},
-		app.WithServiceName("create-buckets"),
+		app.WithServiceName("vega-create-buckets"),
 	)
 }

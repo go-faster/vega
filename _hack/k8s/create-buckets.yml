@@ -10,7 +10,7 @@ spec:
         app: create-buckets
     spec:
       containers:
-        - name: create-buckets
+        - name: vega-create-buckets
           image: create-buckets
           imagePullPolicy: Never
           env:

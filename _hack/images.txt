@@ -7,6 +7,7 @@ docker.io/bitnami/redis:6.2.7-debian-11-r11
 docker.io/grafana/alloy:v1.6.1
 docker.io/grafana/beyla:2.0.2
 docker.io/grafana/grafana-oss:11.5.0
+docker.io/grafana/loki:3.3.2
 docker.io/grafana/loki-canary:3.3.2
 docker.io/kindest/local-path-provisioner:v20241212-8ac705d0
 docker.io/nginxinc/nginx-unprivileged:1.27-alpine
@@ -16,6 +17,7 @@ ghcr.io/jimmidyson/configmap-reload:v0.14.0
 ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:latest
 grafana/oncall:v1.14.1
 grafana/tempo:2.7.0
+kiwigrid/k8s-sidecar:1.29.0
 memcached:1.6.34-alpine
 nats:2.10.25-alpine
 natsio/nats-box:0.16.0
