@@ -13,16 +13,14 @@ import (
 	chProto "github.com/ClickHouse/ch-go/proto"
 	"github.com/go-faster/errors"
 	"github.com/go-faster/sdk/app"
-	"github.com/segmentio/kafka-go"
 	"go.opentelemetry.io/otel/metric"
 	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
 )
 
 type Entry[T any] struct {
-	Raw     []byte
-	Message kafka.Message
-	Res     T
+	Raw []byte
+	Res T
 }
 
 type Table interface {
