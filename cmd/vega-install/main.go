@@ -130,6 +130,14 @@ func run(ctx context.Context) error {
 			KubeConfig:      kubeConfig,
 		},
 		&installer.HelmUpgrade{
+			Name:            "nats",
+			Chart:           "nats/nats",
+			Install:         true,
+			Namespace:       "nats",
+			CreateNamespace: true,
+			KubeConfig:      kubeConfig,
+		},
+		&installer.HelmUpgrade{
 			Name:            "queue",
 			Chart:           "oci://registry-1.docker.io/bitnamicharts/kafka",
 			Install:         true,
