@@ -3,6 +3,7 @@ package installer
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"os"
 	"os/exec"
 
@@ -89,6 +90,11 @@ func (k KindLoad) Step() StepInfo {
 }
 
 func (k KindLoad) Run(ctx context.Context) error {
+	if k.ImagesFile != "" && os.Getenv("GITHUB_ACTIONS") != "" {
+		// Skip kind load on GitHub Actions
+		fmt.Println("> Skipped (in github actions)")
+		return nil
+	}
 	b := k.Bin
 	if b == "" {
 		b = "kind"

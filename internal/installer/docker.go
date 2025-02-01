@@ -3,6 +3,7 @@ package installer
 import (
 	"bufio"
 	"context"
+	"fmt"
 	"os"
 	"os/exec"
 
@@ -22,6 +23,11 @@ func (d Docker) Step() StepInfo {
 }
 
 func (d Docker) Run(ctx context.Context) error {
+	if os.Getenv("GITHUB_ACTIONS") != "" {
+		// Skip pull on GitHub Actions
+		fmt.Println("> Skipped (in github actions)")
+		return nil
+	}
 	b := d.Bin
 	if b == "" {
 		b = "docker"
