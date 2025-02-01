@@ -11,7 +11,7 @@ spec:
     spec:
       containers:
         - name: vega-create-buckets
-          image: create-buckets
+          image: vega-create-buckets
           imagePullPolicy: Never
           env:
             - name: OTEL_EXPORTER_OTLP_PROTOCOL
