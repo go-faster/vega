@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"context"
-	"github.com/nats-io/nats.go"
 	"io"
 	"math/rand"
 	"os"
@@ -13,6 +12,7 @@ import (
 	chProto "github.com/ClickHouse/ch-go/proto"
 	"github.com/go-faster/errors"
 	"github.com/go-faster/sdk/app"
+	"github.com/nats-io/nats.go"
 	"go.opentelemetry.io/otel/metric"
 	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
@@ -179,13 +179,11 @@ func (a *Ingester[M, T]) Consume(ctx context.Context) error {
 		return errors.Wrap(err, "subscribe")
 	}
 
-	select {
-	case <-ctx.Done():
-		if err := subscription.Drain(); err != nil {
-			return errors.Wrap(err, "drain")
-		}
-		return ctx.Err()
+	<-ctx.Done()
+	if err := subscription.Drain(); err != nil {
+		return errors.Wrap(err, "drain")
 	}
+	return nil
 }
 
 func clickHouseServer(list []Server) Server {

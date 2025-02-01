@@ -57,7 +57,6 @@ func (k *Producer) Produce(subject string, msg proto.Message) error {
 	})
 }
 
-func (k *Producer) Close() error {
+func (k *Producer) Close() {
 	k.nc.Close()
-	return nil
 }
