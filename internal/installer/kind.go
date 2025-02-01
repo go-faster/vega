@@ -39,11 +39,10 @@ func (k Kind) Run(ctx context.Context) error {
 			// Delete existing cluster.
 			bo := backoff.NewConstantBackOff(backoff.DefaultInitialInterval)
 
-			cmd := exec.CommandContext(ctx, b, "delete", "cluster", "--name", k.Name)
-			cmd.Stdout = os.Stdout
-			cmd.Stderr = os.Stderr
-
 			if err := backoff.Retry(func() error {
+				cmd := exec.CommandContext(ctx, b, "delete", "cluster", "--name", k.Name)
+				cmd.Stdout = os.Stdout
+				cmd.Stderr = os.Stderr
 				if err := cmd.Run(); err != nil {
 					return errors.Wrap(err, "delete cluster")
 				}
@@ -81,6 +80,7 @@ type KindLoad struct {
 	Bin        string
 	Name       string
 	Images     []string
+	ImagesFile string
 	KubeConfig string
 }
 
@@ -99,6 +99,19 @@ func (k KindLoad) Run(ctx context.Context) error {
 	arg := []string{
 		"load", "docker-image",
 		"--name", k.Name,
+	}
+	if k.ImagesFile != "" {
+		// Each file line is an image.
+		data, err := os.ReadFile(k.ImagesFile)
+		if err != nil {
+			return errors.Wrap(err, "read images file")
+		}
+		for _, line := range bytes.Split(data, []byte("\n")) {
+			if len(line) == 0 {
+				continue
+			}
+			arg = append(arg, string(line))
+		}
 	}
 	arg = append(arg, k.Images...)
 	cmd := exec.CommandContext(ctx, b, arg...)

@@ -2,8 +2,10 @@ package installer
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 
 	"github.com/go-faster/errors"
 )
@@ -54,6 +56,7 @@ func (h HelmUpgrade) Run(ctx context.Context) error {
 	cmd := exec.CommandContext(ctx, b, arg...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
+	fmt.Println(">", strings.Join(cmd.Args, " "))
 	if err := cmd.Run(); err != nil {
 		return errors.Wrap(err, "helm upgrade")
 	}

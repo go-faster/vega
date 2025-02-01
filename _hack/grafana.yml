@@ -55,7 +55,7 @@ datasources:
               - key: service.name
                 value: service_name
           tracesToMetrics:
-            datasourceUid: prometheus
+            datasourceUid: victoria
             spanStartTimeShift: '1h'
             spanEndTimeShift: '-1h'
             tags:
@@ -67,6 +67,39 @@ datasources:
             datasourceUid: prometheus
           lokiSearch:
             datasourceUid: logql
+
+      - name: "tempo"
+        type: tempo
+        access: proxy
+        orgId: 1
+        url: http://tempo.monitoring.svc.cluster.local:3100
+        uid: tempo
+        jsonData:
+          httpMethod: GET
+          tracesToLogsV2:
+            # Field with an internal link pointing to a logs data source in Grafana.
+            # datasourceUid value must match the uid value of the logs data source.
+            datasourceUid: loki
+            spanStartTimeShift: '1h'
+            spanEndTimeShift: '-1h'
+            filterByTraceID: true
+            filterBySpanID: false
+            tags:
+              - key: service.name
+                value: service_name
+          tracesToMetrics:
+            datasourceUid: victoria
+            spanStartTimeShift: '1h'
+            spanEndTimeShift: '-1h'
+            tags:
+              - key: service.name
+                value: service_name
+          nodeGraph:
+            enabled: true
+          serviceMap:
+            datasourceUid: victoria
+          lokiSearch:
+            datasourceUid: loki
 
       - name: "oteldb: LogQL"
         type: loki
@@ -84,6 +117,16 @@ datasources:
               name: trace
               url: '$${__value.raw}'
               urlDisplayLabel: 'View Trace'
+
+      - name: "loki"
+        type: loki
+        access: proxy
+        orgId: 1
+        url: http://loki-gateway.monitoring.svc.cluster.local
+        uid: loki
+        jsonData:
+          serviceMap:
+            datasourceUid: prometheus
 
       - name: "oteldb: PromQL"
         type: prometheus

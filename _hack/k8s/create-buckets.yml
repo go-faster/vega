@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: create-buckets
+  namespace: vega
+spec:
+  template:
+    metadata:
+      labels:
+        app: create-buckets
+    spec:
+      containers:
+        - name: create-buckets
+          image: create-buckets
+          imagePullPolicy: Never
+          env:
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: "grpc"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "http://otel-collector.monitoring.svc.cluster.local:4317"
+      restartPolicy: Never
+  backoffLimit: 4

@@ -81,6 +81,15 @@ data:
         endpoint: otel-oteldb.faster.svc.cluster.local:4317
         tls:
           insecure: true
+      otlp/tempo:
+        endpoint: tempo.monitoring.svc.cluster.local:4317
+        tls:
+          insecure: true
+      loki:
+        endpoint: http://loki-gateway.monitoring.svc.cluster.local/loki/api/v1/push
+        default_labels_enabled:
+          exporter: false
+          job: true
     connectors:
       spanmetrics:
         histogram:
@@ -116,11 +125,11 @@ data:
         traces:
           receivers: [ otlp ]
           processors: [ memory_limiter, k8sattributes, resource, batch ]
-          exporters: [ otlp/oteldb ]
+          exporters: [ otlp/oteldb, otlp/tempo ]
         logs:
           receivers: [ otlp ]
           processors: [ memory_limiter, k8sattributes, resource, batch ]
-          exporters: [ otlp/oteldb ]
+          exporters: [ otlp/oteldb, loki ]
         metrics:
           receivers: [ otlp, k8s_cluster, spanmetrics ]
           processors: [ memory_limiter, k8sattributes, resource, batch ]

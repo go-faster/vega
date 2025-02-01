@@ -34,6 +34,7 @@ helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo add vm https://victoriametrics.github.io/helm-charts/
 helm repo add nats https://nats-io.github.io/k8s/helm/charts/
+helm repo add minio-operator https://operator.min.io
 
 helm repo update
 ```
