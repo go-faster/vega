@@ -23,11 +23,6 @@ func (d Docker) Step() StepInfo {
 }
 
 func (d Docker) Run(ctx context.Context) error {
-	if os.Getenv("GITHUB_ACTIONS") != "" {
-		// Skip pull on GitHub Actions
-		fmt.Println("> Skipped (in github actions)")
-		return nil
-	}
 	b := d.Bin
 	if b == "" {
 		b = "docker"
@@ -61,6 +56,12 @@ func (d DockerPull) Step() StepInfo {
 }
 
 func (d DockerPull) Run(ctx context.Context) error {
+	if os.Getenv("GITHUB_ACTIONS") != "" {
+		// Skip pull on GitHub Actions
+		fmt.Println("> Skipped (in github actions)")
+		return nil
+	}
+
 	images := d.Images
 
 	if d.ImagesFile != "" {
