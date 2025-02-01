@@ -12,8 +12,13 @@ grafana.ini:
   auth.anonymous:
     enabled: true
     org_role: Admin
-  auth.disable_login_form: true
-  users.allow_sign_up: false
+  auth:
+    disable_login_form: true
+  users:
+    allow_sign_up: false
+  tracing.opentelemetry.otlp:
+    address: "otel-collector.monitoring.svc.cluster.local:4317"
+
 deploymentStrategy:
   type: Recreate
 
