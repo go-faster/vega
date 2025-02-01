@@ -3,6 +3,7 @@ package installer
 import (
 	"bytes"
 	"context"
+	"github.com/cenkalti/backoff/v4"
 	"os"
 	"os/exec"
 
@@ -36,11 +37,19 @@ func (k Kind) Run(ctx context.Context) error {
 		}
 		if bytes.Contains(buf.Bytes(), []byte(k.Name)) {
 			// Delete existing cluster.
+			bo := backoff.NewConstantBackOff(backoff.DefaultInitialInterval)
+
 			cmd := exec.CommandContext(ctx, b, "delete", "cluster", "--name", k.Name)
 			cmd.Stdout = os.Stdout
 			cmd.Stderr = os.Stderr
-			if err := cmd.Run(); err != nil {
-				return errors.Wrap(err, "delete cluster")
+
+			if err := backoff.Retry(func() error {
+				if err := cmd.Run(); err != nil {
+					return errors.Wrap(err, "delete cluster")
+				}
+				return nil
+			}, backoff.WithContext(bo, ctx)); err != nil {
+				return errors.Wrap(err, "retry")
 			}
 		}
 	}
