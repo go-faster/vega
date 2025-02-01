@@ -35,6 +35,11 @@ datasources:
         url: http://vmselect-cluster.vm.svc.cluster.local:8481/select/0/prometheus
         uid: victoria
 
+      - name: Pyroscope
+        type: grafana-pyroscope-datasource
+        url: http://pyroscope.monitoring.svc.cluster.local.:4040/
+        uid: pyroscope
+
       - name: "oteldb: TraceQL"
         type: tempo
         access: proxy

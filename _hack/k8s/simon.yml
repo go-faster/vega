@@ -40,6 +40,12 @@ spec:
               value: "500"
             - name: SERVER_ADDR
               value: http://simon-server:8080
+            - name: PYROSCOPE_APP_NAME
+              value: "simon.client"
+            - name: PYROSCOPE_ENABLE
+              value: "true"
+            - name: PYROSCOPE_URL
+              value: "http://pyroscope.monitoring.svc.cluster.local:4040"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -77,6 +83,12 @@ spec:
               value: "500"
             - name: HTTP_ADDR
               value: "0.0.0.0:8080"
+            - name: PYROSCOPE_APP_NAME
+              value: "simon.server"
+            - name: PYROSCOPE_ENABLE
+              value: "true"
+            - name: PYROSCOPE_URL
+              value: "http://pyroscope.monitoring.svc.cluster.local:4040"
 ---
 # service for simon-server
 apiVersion: v1

@@ -200,6 +200,15 @@ func run(ctx context.Context) error {
 			KubeConfig:      kubeConfig,
 		},
 		&installer.HelmUpgrade{
+			Name:            "pyroscope",
+			Chart:           "grafana/pyroscope",
+			Install:         true,
+			Namespace:       "monitoring",
+			Values:          file("pyroscope.yml"),
+			CreateNamespace: true,
+			KubeConfig:      kubeConfig,
+		},
+		&installer.HelmUpgrade{
 			Name:            "kube-state",
 			Chart:           "prometheus-community/kube-state-metrics",
 			Install:         true,

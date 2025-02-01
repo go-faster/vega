@@ -32,3 +32,9 @@ spec:
               value: "admin"
             - name: CLICKHOUSE_DB
               value: "default"
+            - name: PYROSCOPE_APP_NAME
+              value: "vega.ingest"
+            - name: PYROSCOPE_ENABLE
+              value: "true"
+            - name: PYROSCOPE_URL
+              value: "http://pyroscope.monitoring.svc.cluster.local:4040"

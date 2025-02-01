@@ -30,6 +30,12 @@ spec:
               value: "http://otel-collector.monitoring.svc.cluster.local:4317"
             - name: NATS_URL
               value: "nats://nats.nats.svc.cluster.local:4222"
+            - name: PYROSCOPE_APP_NAME
+              value: "vega.agent"
+            - name: PYROSCOPE_ENABLE
+              value: "true"
+            - name: PYROSCOPE_URL
+              value: "http://pyroscope.monitoring.svc.cluster.local:4040"
           volumeMounts:
             - mountPath: /var/run/tetragon
               name: tetragon
