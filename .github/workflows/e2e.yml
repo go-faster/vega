@@ -85,15 +85,5 @@ jobs:
         env:
           KUBECONFIG: _out/kubeconfig.yml
 
-      - name: Wait for grafana
-        run: kubectl -n monitoring rollout status deployment grafana
-        env:
-          KUBECONFIG: _out/kubeconfig.yml
-
-      - name: Wait for oteldb
-        run: kubectl -n faster rollout status deployment otel-oteldb
-        env:
-          KUBECONFIG: _out/kubeconfig.yml
-
       - name: Check vega api
         run: go run ./cmd/v version
