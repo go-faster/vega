@@ -11,13 +11,23 @@ import (
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 
+	"github.com/go-faster/vega/internal/api"
+	"github.com/go-faster/vega/internal/kube"
 	"github.com/go-faster/vega/internal/oas"
 )
 
 func main() {
-	app.Run(func(ctx context.Context, lg *zap.Logger, m *app.Telemetry) error {
+	app.Run(func(ctx context.Context, lg *zap.Logger, t *app.Telemetry) error {
 		ctx = zctx.WithOpenTelemetryZap(ctx)
-		srv, err := oas.NewServer(oas.UnimplementedHandler{})
+		kubeClient, err := kube.New(t)
+		if err != nil {
+			return errors.Wrap(err, "kube.New")
+		}
+		handler := api.NewHandler(
+			kubeClient,
+			t.TracerProvider(),
+		)
+		srv, err := oas.NewServer(handler)
 		if err != nil {
 			return errors.Wrap(err, "create server")
 		}
