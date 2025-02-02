@@ -56,6 +56,14 @@ func run(ctx context.Context) error {
 			File:       file("k8s"),
 			KubeConfig: kubeConfig,
 		},
+		&installer.KubeDelete{
+			File:       file("k8s-create"),
+			KubeConfig: kubeConfig,
+		},
+		&installer.KubeCreate{
+			File:       file("k8s-create"),
+			KubeConfig: kubeConfig,
+		},
 		&installer.KubeRestart{
 			Target:     "daemonset",
 			Name:       "vega-agent",
