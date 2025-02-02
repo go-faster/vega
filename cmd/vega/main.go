@@ -30,7 +30,23 @@ func main() {
 		client, err := promapi.NewClient(os.Getenv("PROMAPI_URL"),
 			promapi.WithTracerProvider(t.TracerProvider()),
 			promapi.WithMeterProvider(t.MeterProvider()),
-			promapi.WithClient(otelhttp.DefaultClient),
+			promapi.WithClient(&http.Client{
+				Transport: otelhttp.NewTransport(http.DefaultTransport,
+					otelhttp.WithMeterProvider(t.MeterProvider()),
+					otelhttp.WithTracerProvider(t.TracerProvider()),
+					otelhttp.WithPropagators(t.TextMapPropagator()),
+					otelhttp.WithSpanNameFormatter(func(operation string, r *http.Request) string {
+						route, ok := (&promapi.Server{}).FindPath(r.Method, r.URL)
+						if !ok {
+							return operation
+						}
+						if v := route.Name(); v != "" {
+							return v
+						}
+						return operation
+					}),
+				),
+			}),
 		)
 		if err != nil {
 			return errors.Wrap(err, "create client")
@@ -50,6 +66,16 @@ func main() {
 				otelhttp.WithMeterProvider(t.MeterProvider()),
 				otelhttp.WithTracerProvider(t.TracerProvider()),
 				otelhttp.WithPropagators(t.TextMapPropagator()),
+				otelhttp.WithSpanNameFormatter(func(operation string, r *http.Request) string {
+					route, ok := srv.FindPath(r.Method, r.URL)
+					if !ok {
+						return operation
+					}
+					if v := route.Name(); v != "" {
+						return v
+					}
+					return operation
+				}),
 			),
 			ReadHeaderTimeout: time.Second,
 			BaseContext: func(listener net.Listener) context.Context {
