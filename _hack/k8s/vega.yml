@@ -1,0 +1,49 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+  namespace: vega
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vega-api
+  template:
+    metadata:
+      labels:
+        app: vega-api
+        vega.app: vega.api
+        app.kubernetes.io/name: vega.api
+        app.kubernetes.io/part-of: vega
+    spec:
+      containers:
+        - name: api
+          image: vega
+          imagePullPolicy: Never
+          env:
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: "grpc"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "http://otel-collector.monitoring.svc.cluster.local:4317"
+            - name: PYROSCOPE_APP_NAME
+              value: "vega.api"
+            - name: PYROSCOPE_ENABLE
+              value: "true"
+            - name: PYROSCOPE_URL
+              value: "http://pyroscope.monitoring.svc.cluster.local:4040"
+---
+# service for simon-server
+apiVersion: v1
+kind: Service
+metadata:
+  name: api
+  namespace: vega
+spec:
+  selector:
+    app: vega-api
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      name: "http"

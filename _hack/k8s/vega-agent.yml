@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: vega-agent
+  name: agent
   namespace: vega
 spec:
   selector:
@@ -11,6 +11,9 @@ spec:
     metadata:
       labels:
         app: vega-agent
+        vega.app: vega.agent
+        app.kubernetes.io/name: vega.agent
+        app.kubernetes.io/part-of: vega
     spec:
       volumes:
         - name: tetragon

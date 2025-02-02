@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: vega-ingest
+  name: ingest
   namespace: vega
 spec:
   replicas: 1
@@ -12,6 +12,9 @@ spec:
     metadata:
       labels:
         app: vega-ingest
+        vega.app: vega.ingest
+        app.kubernetes.io/name: vega.ingest
+        app.kubernetes.io/part-of: vega
     spec:
       containers:
         - name: ingest

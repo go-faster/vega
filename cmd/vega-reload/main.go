@@ -31,6 +31,11 @@ func run(ctx context.Context) error {
 			Max: 6,
 			Steps: []installer.Step{
 				&installer.Docker{
+					Tags:    []string{"vega"},
+					File:    "Dockerfile",
+					Context: ".",
+				},
+				&installer.Docker{
 					Tags:    []string{"vega-agent"},
 					File:    "agent.Dockerfile",
 					Context: ".",
@@ -49,7 +54,7 @@ func run(ctx context.Context) error {
 		},
 		&installer.KindLoad{
 			Name:       "vega",
-			Images:     []string{"vega-agent", "vega-ingest", "vega-create-buckets"},
+			Images:     []string{"vega", "vega-agent", "vega-ingest", "vega-create-buckets"},
 			KubeConfig: kubeConfig,
 		},
 		&installer.KubeApply{
