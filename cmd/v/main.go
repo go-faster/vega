@@ -32,6 +32,7 @@ func root() *cobra.Command {
 		},
 	}
 	cmd.AddCommand(newVersionCmd(app))
+	cmd.AddCommand(newWaitCmd(app))
 	return cmd
 }
 

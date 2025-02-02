@@ -85,5 +85,8 @@ jobs:
         env:
           KUBECONFIG: _out/kubeconfig.yml
 
+      - name: Wait for api
+        run: go run ./cmd/v wait
+
       - name: Check vega api
         run: go run ./cmd/v version
