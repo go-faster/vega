@@ -75,8 +75,13 @@ jobs:
       - name: Install vega
         run: go run ./cmd/vega-install
 
-      - name: Wait for vega
-        run: kubectl -n vega rollout status --timeout=2m daemonset vega-agent
+      - name: Wait for vega agent
+        run: kubectl -n vega rollout status --timeout=2m daemonset agent
+        env:
+          KUBECONFIG: _out/kubeconfig.yml
+
+      - name: Wait for vega api
+        run: kubectl -n vega rollout status --timeout=2m daemonset api
         env:
           KUBECONFIG: _out/kubeconfig.yml
 
@@ -90,3 +95,5 @@ jobs:
         env:
           KUBECONFIG: _out/kubeconfig.yml
 
+      - name: Check vega api
+        run: go run ./cmd/v version
