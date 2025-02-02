@@ -18,6 +18,8 @@ spec:
     metadata:
       labels:
         vega.app: simon.client
+        app.kubernetes.io/name: simon.client
+        app.kubernetes.io/part-of: simon
     spec:
       containers:
         - name: client
@@ -70,6 +72,8 @@ spec:
     metadata:
       labels:
         vega.app: simon.server
+        app.kubernetes.io/name: simon.client
+        app.kubernetes.io/part-of: simon
     spec:
       containers:
         - name: server
