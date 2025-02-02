@@ -140,6 +140,25 @@ func (s *Pod) SetFake() {
 			s.Status = "string"
 		}
 	}
+	{
+		{
+			s.Resources.SetFake()
+		}
+	}
+}
+
+// SetFake set fake values.
+func (s *PodResources) SetFake() {
+	{
+		{
+			s.CPUUsageTotalMillicores = float64(0)
+		}
+	}
+	{
+		{
+			s.MemUsageTotalBytes = int64(0)
+		}
+	}
 }
 
 // SetFake set fake values.

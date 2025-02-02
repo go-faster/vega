@@ -1,0 +1,931 @@
+openapi: 3.0.3
+info:
+  title: Prometheus API
+  version: 2.44.0
+externalDocs:
+  description: Prometheus documentation
+  url: https://prometheus.io/docs/prometheus/latest/querying/api/
+servers:
+  - url: "http://localhost:3200"
+paths:
+  /api/v1/query:
+    description: Instant queries
+    get:
+      operationId: getQuery
+      description: Query Prometheus
+      parameters:
+        - name: query
+          description: Prometheus expression query string.
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: time
+          description: Evaluation timestamp.
+          in: query
+          schema:
+            $ref: "#/components/schemas/PrometheusTimestamp"
+        - name: lookback_delta
+          description: Lookback delta duration in duration format or float number of seconds.
+          in: query
+          schema:
+            type: string
+        - name: stats
+          description: Statistics to return.
+          in: query
+          schema:
+            type: string
+      responses:
+        200:
+          $ref: "#/components/responses/QueryResponse"
+        default:
+          $ref: "#/components/responses/Fail"
+    post:
+      operationId: postQuery
+      description: Query Prometheus
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/QueryForm"
+      responses:
+        200:
+          $ref: "#/components/responses/QueryResponse"
+        default:
+          $ref: "#/components/responses/Fail"
+  /api/v1/query_range:
+    description: Evaluates an expression query over a range of time.
+    get:
+      operationId: getQueryRange
+      description: Query Prometheus
+      parameters:
+        - name: query
+          description: Prometheus expression query string.
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: start
+          description: Start timestamp, inclusive.
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/PrometheusTimestamp"
+        - name: end
+          description: End timestamp, inclusive.
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/PrometheusTimestamp"
+        - name: step
+          description: Query resolution step width in duration format or float number of seconds.
+          in: query
+          required: true
+          schema:
+            type: string
+            description: Prometheus duration or float.
+        - name: lookback_delta
+          description: Lookback delta duration in duration format or float number of seconds.
+          in: query
+          schema:
+            type: string
+        - name: stats
+          description: Statistics to return.
+          in: query
+          schema:
+            type: string
+      responses:
+        200:
+          $ref: "#/components/responses/QueryResponse"
+        default:
+          $ref: "#/components/responses/Fail"
+    post:
+      operationId: postQueryRange
+      description: Query Prometheus
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/QueryRangeForm"
+      responses:
+        200:
+          $ref: "#/components/responses/QueryResponse"
+        default:
+          $ref: "#/components/responses/Fail"
+  /api/v1/query_exemplars:
+    description: Returns a list of exemplars for a valid PromQL query for a specific time range
+    get:
+      operationId: getQueryExemplars
+      description: Query Prometheus
+      parameters:
+        - name: query
+          description: Prometheus expression query string.
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: start
+          description: Start timestamp.
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/PrometheusTimestamp"
+        - name: end
+          description: End timestamp.
+          in: query
+          required: true
+          schema:
+            $ref: "#/components/schemas/PrometheusTimestamp"
+      responses:
+        200:
+          $ref: "#/components/responses/QueryExemplarsResponse"
+        default:
+          $ref: "#/components/responses/Fail"
+    post:
+      operationId: postQueryExemplars
+      description: Query Prometheus
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/ExemplarsForm"
+      responses:
+        200:
+          $ref: "#/components/responses/QueryExemplarsResponse"
+        default:
+          $ref: "#/components/responses/Fail"
+  /api/v1/series:
+    description: Returns the list of time series that match a certain label set.
+    get:
+      operationId: getSeries
+      description: Query Prometheus
+      parameters:
+        - name: start
+          description: Start timestamp.
+          in: query
+          schema:
+            $ref: "#/components/schemas/PrometheusTimestamp"
+        - name: end
+          description: End timestamp.
+          in: query
+          schema:
+            $ref: "#/components/schemas/PrometheusTimestamp"
+        - name: match[]
+          description: Repeated series selector argument that selects the series from which to read the label names.
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+            minItems: 1
+        - name: limit
+          description: Maximum number of returned series. Optional. 0 means disabled.
+          in: query
+          schema:
+            type: integer
+      responses:
+        200:
+          $ref: "#/components/responses/SeriesResponse"
+        default:
+          $ref: "#/components/responses/Fail"
+    post:
+      operationId: postSeries
+      description: Query Prometheus
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/SeriesForm"
+      responses:
+        200:
+          $ref: "#/components/responses/SeriesResponse"
+        default:
+          $ref: "#/components/responses/Fail"
+  /api/v1/labels:
+    description: Returns a list of label names.
+    get:
+      operationId: getLabels
+      parameters:
+        - name: start
+          description: Start timestamp.
+          in: query
+          schema:
+            $ref: "#/components/schemas/PrometheusTimestamp"
+        - name: end
+          description: End timestamp.
+          in: query
+          schema:
+            $ref: "#/components/schemas/PrometheusTimestamp"
+        - name: match[]
+          description: Repeated series selector argument that selects the series from which to read the label names.
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+        - name: limit
+          description: Maximum number of returned series. Optional. 0 means disabled.
+          in: query
+          schema:
+            type: integer
+      responses:
+        200:
+          $ref: "#/components/responses/LabelsResponse"
+        default:
+          $ref: "#/components/responses/Fail"
+    post:
+      operationId: postLabels
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/LabelsForm"
+      responses:
+        200:
+          $ref: "#/components/responses/LabelsResponse"
+        default:
+          $ref: "#/components/responses/Fail"
+  /api/v1/label/{label}/values:
+    description: Returns a list of label values for a provided label name.
+    get:
+      operationId: getLabelValues
+      parameters:
+        - name: label
+          description: Label to query values.
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: start
+          description: Start timestamp.
+          in: query
+          schema:
+            $ref: "#/components/schemas/PrometheusTimestamp"
+        - name: end
+          description: End timestamp.
+          in: query
+          schema:
+            $ref: "#/components/schemas/PrometheusTimestamp"
+        - name: match[]
+          description: Repeated series selector argument that selects the series from which to read the label names.
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+        - name: limit
+          description: Maximum number of returned series. Optional. 0 means disabled.
+          in: query
+          schema:
+            type: integer
+      responses:
+        200:
+          $ref: "#/components/responses/LabelValuesResponse"
+        default:
+          $ref: "#/components/responses/Fail"
+  /api/v1/rules:
+    description: Returns a list of alerting and recording rules that are currently loaded.
+    get:
+      operationId: getRules
+      parameters:
+        - name: type
+          description: |
+            Return only the alerting rules (e.g. type=alert) or the recording rules (e.g. type=record).
+            When the parameter is absent or empty, no filtering is done.
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: ["alert", "record"]
+        - name: rule_name[]
+          description: |
+            Only return rules with the given rule name.
+            If the parameter is repeated, rules with any of the provided names are returned.
+            If we've filtered out all the rules of a group, the group is not returned.
+            When the parameter is absent or empty, no filtering is done.
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+        - name: rule_group[]
+          description: |
+            Only return rules with the given rule group name.
+            If the parameter is repeated, rules with any of the provided rule group names are returned.
+            When the parameter is absent or empty, no filtering is done.
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+        - name: file[]
+          description: |
+            Only return rules with the given filepath.
+            If the parameter is repeated, rules with any of the provided filepaths are returned.
+            When the parameter is absent or empty, no filtering is done.
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        200:
+          $ref: "#/components/responses/RulesResponse"
+        default:
+          $ref: "#/components/responses/Fail"
+  /api/v1/metadata:
+    description: Returns metadata about metrics currently scraped from targets.
+    get:
+      operationId: getMetadata
+      parameters:
+        - name: limit
+          description: Maximum number of metrics to return.
+          in: query
+          schema:
+            type: integer
+        - name: limit_per_metric
+          description: |
+            FIXME(tdakkota): undocumented
+          in: query
+          schema:
+            type: integer
+        - name: metric
+          description: |
+            A metric name to filter metadata for.
+            All metric metadata is retrieved if left empty.
+          in: query
+          schema:
+            type: string
+      responses:
+        200:
+          $ref: "#/components/responses/MetadataResponse"
+        default:
+          $ref: "#/components/responses/Fail"
+components:
+  responses:
+    QueryResponse:
+      description: Query response
+      content:
+        "application/json":
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ResponseMixin"
+              - type: object
+                required: [data]
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Data"
+    QueryExemplarsResponse:
+      description: Query response
+      content:
+        "application/json":
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ResponseMixin"
+              - type: object
+                required: [data]
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Exemplars"
+    SeriesResponse:
+      description: Series list
+      content:
+        "application/json":
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ResponseMixin"
+              - type: object
+                required: [data]
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Series"
+    LabelsResponse:
+      description: Labels list
+      content:
+        "application/json":
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ResponseMixin"
+              - type: object
+                required: [data]
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Labels"
+    LabelValuesResponse:
+      description: Label values list
+      content:
+        "application/json":
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ResponseMixin"
+              - type: object
+                required: [data]
+                properties:
+                  data:
+                    $ref: "#/components/schemas/LabelValues"
+    RulesResponse:
+      description: Rule list
+      content:
+        "application/json":
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ResponseMixin"
+              - type: object
+                required: [data]
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Rules"
+    MetadataResponse:
+      description: Label list
+      content:
+        "application/json":
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ResponseMixin"
+              - type: object
+                required: [data]
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Metadata"
+    Fail:
+      description: Error while processing request
+      content:
+        "application/json":
+          schema:
+            $ref: "#/components/schemas/Fail"
+  schemas:
+    QueryForm:
+      type: object
+      required: [query]
+      properties:
+        query:
+          type: string
+        time:
+          $ref: "#/components/schemas/PrometheusTimestamp"
+        lookback_delta:
+          type: string
+        stats:
+          type: string
+    QueryRangeForm:
+      type: object
+      required: [query, start, end, step]
+      properties:
+        query:
+          type: string
+          description: Prometheus expression query string.
+        start:
+          $ref: "#/components/schemas/PrometheusTimestamp"
+        end:
+          $ref: "#/components/schemas/PrometheusTimestamp"
+        step:
+          type: string
+          description: Query resolution step width in duration format or float number of seconds.
+        lookback_delta:
+          type: string
+        stats:
+          type: string
+    LabelsForm:
+      type: object
+      properties:
+        start:
+          $ref: "#/components/schemas/PrometheusTimestamp"
+        end:
+          $ref: "#/components/schemas/PrometheusTimestamp"
+        match[]:
+          type: array
+          items:
+            type: string
+    SeriesForm:
+      type: object
+      required: ["match[]"]
+      properties:
+        start:
+          $ref: "#/components/schemas/PrometheusTimestamp"
+        end:
+          $ref: "#/components/schemas/PrometheusTimestamp"
+        match[]:
+          type: array
+          items:
+            type: string
+    ExemplarsForm:
+      type: object
+      required: ["query", "start", "end"]
+      properties:
+        query:
+          type: string
+        start:
+          $ref: "#/components/schemas/PrometheusTimestamp"
+        end:
+          $ref: "#/components/schemas/PrometheusTimestamp"
+
+    ResponseMixin:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          default: "success"
+          description: Always 'success'
+        warnings:
+          description: >-
+            Only if there were warnings while executing the request.
+            There will still be data in the data field.
+          type: array
+          items:
+            type: string
+        infos:
+          description: >-
+            Only set if there were info-level annnotations while executing the request.
+          type: array
+          items:
+            type: string
+
+    Scalar:
+      type: object
+      required: [result]
+      properties:
+        result:
+          $ref: "#/components/schemas/FPoint"
+    String:
+      type: object
+      required: [result]
+      properties:
+        result:
+          $ref: "#/components/schemas/StringValue"
+    Vector:
+      type: object
+      required: [result]
+      properties:
+        result:
+          type: array
+          items:
+            type: object
+            required: [metric, value]
+            properties:
+              metric:
+                type: object
+                additionalProperties:
+                  type: string
+              value:
+                $ref: "#/components/schemas/Sample"
+    Matrix:
+      type: object
+      required: [result]
+      properties:
+        result:
+          type: array
+          items:
+            type: object
+            required: [metric]
+            properties:
+              metric:
+                type: object
+                additionalProperties:
+                  type: string
+              values:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FPoint"
+              histograms:
+                type: array
+                items:
+                  $ref: "#/components/schemas/HPoint"
+    Data:
+      discriminator:
+        propertyName: resultType
+        mapping:
+          matrix: Matrix
+          vector: Vector
+          scalar: Scalar
+          string: String
+      oneOf:
+        - $ref: "#/components/schemas/Matrix"
+        - $ref: "#/components/schemas/Vector"
+        - $ref: "#/components/schemas/Scalar"
+        - $ref: "#/components/schemas/String"
+    FPoint:
+      type: array
+      items:
+        - type: number
+          description: float64 milli timestamp
+          x-ogen-name: T
+        - type: string
+          description: value
+          format: float64
+          x-ogen-name: V
+    HPoint:
+      type: array
+      items:
+        - type: number
+          description: float64 milli timestamp
+          x-ogen-name: T
+        - $ref: "#/components/schemas/Histogram"
+    StringValue:
+      type: array
+      items:
+        - type: number
+          description: float64 milli timestamp
+          x-ogen-name: T
+        - type: string
+          description: value
+          x-ogen-name: V
+    Sample:
+      type: array
+      items:
+        - type: number
+          description: float64 milli timestamp
+          x-ogen-name: T
+        - oneOf:
+            - $ref: "#/components/schemas/Histogram"
+            - type: string
+              description: value
+              format: float64
+          x-ogen-name: HistogramOrValue
+    Histogram:
+      type: object
+      required: [count, sum]
+      properties:
+        count:
+          type: number
+          format: float64
+        sum:
+          type: number
+          format: float64
+        buckets:
+          type: array
+          items:
+            $ref: "#/components/schemas/Bucket"
+    Bucket:
+      # See https://github.com/prometheus/prometheus/blob/8e5f0387a2c9115849fcd99c9a0b295b779d938a/util/jsonutil/marshal.go#L66-L89
+      # as encoding reference.
+      type: array
+      items:
+        - type: integer
+          description: |
+            The 1st element in each bucket array determines if the boundaries are
+            inclusive (AKA closed) or exclusive (AKA open):
+            ```
+            0: lower exclusive, upper inclusive
+            1: lower inclusive, upper exclusive
+            2: both exclusive
+            3: both inclusive
+            ```
+          x-ogen-name: BoundaryType
+        - type: string
+          description: Lower boundary.
+          format: float64
+          x-ogen-name: Lower
+        - type: string
+          description: Upper boundary.
+          format: float64
+          x-ogen-name: Upper
+        - type: string
+          description: Bucket count.
+          format: float64
+          x-ogen-name: Count
+
+    Exemplars:
+      type: array
+      items:
+        $ref: "#/components/schemas/ExemplarsSet"
+    ExemplarsSet:
+      type: object
+      properties:
+        seriesLabels:
+          $ref: "#/components/schemas/LabelSet"
+        exemplars:
+          type: array
+          items:
+            $ref: "#/components/schemas/Exemplar"
+    Exemplar:
+      type: object
+      required: ["labels", "value"]
+      properties:
+        labels:
+          $ref: "#/components/schemas/LabelSet"
+        value:
+          type: string
+          format: float64
+        timestamp:
+          type: number
+          format: float64
+
+    Series:
+      type: array
+      items:
+        $ref: "#/components/schemas/LabelSet"
+
+    Labels:
+      type: array
+      items:
+        type: string
+    LabelValues:
+      type: array
+      items:
+        type: string
+
+    Rules:
+      type: object
+      required: [groups]
+      properties:
+        groups:
+          type: array
+          items:
+            $ref: "#/components/schemas/RuleGroup"
+    RuleGroup:
+      type: object
+      properties:
+        name:
+          type: string
+        file:
+          type: string
+        rules:
+          type: array
+          description: |
+            In order to preserve rule ordering, while exposing type (alerting or recording)
+            specific properties, both alerting and recording rules are exposed in the
+            same array.
+          items:
+            $ref: "#/components/schemas/Rule"
+        internal:
+          type: number
+        limit:
+          type: integer
+        evaluationTime:
+          type: number
+        lastEvaluation:
+          type: string
+    # FIXME(tdakkota): complete definition
+    # See https://github.com/prometheus/prometheus/blob/f399f386cef3b19c48157e9678a4f50997db3f41/web/api/v1/api.go#L1279.
+    Rule:
+      discriminator:
+        propertyName: type
+        mapping:
+          alerting: AlertingRule
+          recording: RecordingRule
+      oneOf:
+        - $ref: "#/components/schemas/AlertingRule"
+        - $ref: "#/components/schemas/RecordingRule"
+    Alert:
+      type: object
+      required:
+        - labels
+        - annotations
+        - state
+        - value
+      properties:
+        labels:
+          $ref: "#/components/schemas/LabelSet"
+        annotations:
+          $ref: "#/components/schemas/LabelSet"
+        state:
+          type: string
+        activeAt:
+          type: string
+          format: date-time
+        value:
+          type: string
+    RuleHealth:
+      type: string
+      enum:
+        - unknown
+        - ok
+        - err
+    AlertingRule:
+      type: object
+      required:
+        - type
+        - name
+        - query
+        - duration
+        - labels
+        - annotations
+        - alerts
+        - health
+        - lastError
+        - evaluationTime
+        - lastEvaluation
+      properties:
+        state:
+          type: string
+          enum:
+            - pending
+            - firing
+            - inactive
+        name:
+          type: string
+        query:
+          type: string
+        duration:
+          type: string
+        labels:
+          $ref: "#/components/schemas/LabelSet"
+        annotations:
+          $ref: "#/components/schemas/LabelSet"
+        alerts:
+          type: array
+          items:
+            $ref: "#/components/schemas/Alert"
+        health:
+          $ref: "#/components/schemas/RuleHealth"
+        lastError:
+          type: string
+        evaluationTime:
+          type: number
+        lastEvaluation:
+          type: string
+          format: date-time
+        type:
+          type: string
+    RecordingRule:
+      type: object
+      required:
+        - type
+        - name
+        - query
+        - labels
+        - health
+        - lastError
+        - evaluationTime
+        - lastEvaluation
+      properties:
+        name:
+          type: string
+        query:
+          type: string
+        labels:
+          $ref: "#/components/schemas/LabelSet"
+        health:
+          $ref: "#/components/schemas/RuleHealth"
+        lastError:
+          type: string
+        evaluationTime:
+          type: string
+          format: date-time
+        lastEvaluation:
+          type: number
+        type:
+          type: string
+    Metadata:
+      type: object
+      additionalProperties:
+        type: array
+        items:
+          $ref: "#/components/schemas/MetricMetadata"
+    MetricMetadata:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - "counter"
+            - "gauge"
+            - "histogram"
+            - "gaugehistogram"
+            - "summary"
+            - "info"
+            - "stateset"
+            - "unknown"
+        help:
+          type: string
+        unit:
+          type: string
+
+    Fail:
+      type: object
+      required: [status, error, errorType]
+      description: "May still contain data"
+      properties:
+        status:
+          type: string
+          default: "error"
+        error:
+          type: string
+        errorType:
+          type: string
+          enum:
+            - "timeout"
+            - "canceled"
+            - "execution"
+            - "bad_data"
+            - "internal"
+            - "unavailable"
+            - "not_found"
+          # From VictoriaMetrics:
+            - "422"
+        data:
+          $ref: "#/components/schemas/Data"
+
+    PrometheusTimestamp:
+      type: string
+      description: RFC3339 or Unix timestamp
+    LabelSet:
+      type: object
+      additionalProperties:
+        type: string

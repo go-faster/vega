@@ -296,7 +296,8 @@ type Pod struct {
 	// Pod namespace.
 	Namespace string `json:"namespace"`
 	// Pod status.
-	Status string `json:"status"`
+	Status    string       `json:"status"`
+	Resources PodResources `json:"resources"`
 }
 
 // GetName returns the value of Name.
@@ -314,6 +315,11 @@ func (s *Pod) GetStatus() string {
 	return s.Status
 }
 
+// GetResources returns the value of Resources.
+func (s *Pod) GetResources() PodResources {
+	return s.Resources
+}
+
 // SetName sets the value of Name.
 func (s *Pod) SetName(val string) {
 	s.Name = val
@@ -327,6 +333,39 @@ func (s *Pod) SetNamespace(val string) {
 // SetStatus sets the value of Status.
 func (s *Pod) SetStatus(val string) {
 	s.Status = val
+}
+
+// SetResources sets the value of Resources.
+func (s *Pod) SetResources(val PodResources) {
+	s.Resources = val
+}
+
+// Ref: #/components/schemas/PodResources
+type PodResources struct {
+	// Total CPU usage in millicores.
+	CPUUsageTotalMillicores float64 `json:"cpu_usage_total_millicores"`
+	// Total memory usage in bytes.
+	MemUsageTotalBytes int64 `json:"mem_usage_total_bytes"`
+}
+
+// GetCPUUsageTotalMillicores returns the value of CPUUsageTotalMillicores.
+func (s *PodResources) GetCPUUsageTotalMillicores() float64 {
+	return s.CPUUsageTotalMillicores
+}
+
+// GetMemUsageTotalBytes returns the value of MemUsageTotalBytes.
+func (s *PodResources) GetMemUsageTotalBytes() int64 {
+	return s.MemUsageTotalBytes
+}
+
+// SetCPUUsageTotalMillicores sets the value of CPUUsageTotalMillicores.
+func (s *PodResources) SetCPUUsageTotalMillicores(val float64) {
+	s.CPUUsageTotalMillicores = val
+}
+
+// SetMemUsageTotalBytes sets the value of MemUsageTotalBytes.
+func (s *PodResources) SetMemUsageTotalBytes(val int64) {
+	s.MemUsageTotalBytes = val
 }
 
 type SpanID string

@@ -3,19 +3,26 @@ package api
 
 import (
 	"context"
+	"fmt"
 	"runtime/debug"
 	"slices"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
 
 	"github.com/go-faster/errors"
+	"github.com/go-faster/sdk/zctx"
+	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
+	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
+	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 
 	"github.com/go-faster/vega/internal/oas"
+	"github.com/go-faster/vega/internal/promapi"
 	"github.com/go-faster/vega/internal/semconv"
 )
 
@@ -23,7 +30,78 @@ var _ oas.Handler = (*Handler)(nil)
 
 type Handler struct {
 	kube  *kubernetes.Clientset
+	prom  *promapi.Client
 	trace trace.Tracer
+}
+
+func toPrometheusTimestamp(t time.Time) promapi.PrometheusTimestamp {
+	return promapi.PrometheusTimestamp(strconv.FormatInt(t.Unix(), 10))
+}
+
+func toOptPrometheusTimestamp(t time.Time) promapi.OptPrometheusTimestamp {
+	if t.IsZero() {
+		return promapi.OptPrometheusTimestamp{}
+	}
+	return promapi.NewOptPrometheusTimestamp(toPrometheusTimestamp(t))
+}
+
+func (h *Handler) getInstantQuery(ctx context.Context, now time.Time, query string) (float64, error) {
+	ctx, span := h.trace.Start(ctx, "getInstantQuery",
+		trace.WithAttributes(
+			attribute.String("query", query),
+		),
+	)
+	defer span.End()
+
+	result, err := h.prom.GetQuery(ctx, promapi.GetQueryParams{
+		Query: query,
+		Time:  toOptPrometheusTimestamp(now),
+	})
+	if err != nil {
+		return 0, errors.Wrap(err, "get query")
+	}
+	zctx.From(ctx).Info("Get query",
+		zap.String("query", query),
+		zap.Any("result", result),
+	)
+	var out float64
+	for _, res := range result.Data.Vector.Result {
+		out += res.Value.HistogramOrValue.StringFloat64
+	}
+	return out, nil
+}
+
+func (h *Handler) getPorResources(ctx context.Context, pod v1.Pod) (*oas.PodResources, error) {
+	ctx, span := h.trace.Start(ctx, "getPorResources",
+		trace.WithAttributes(
+			attribute.String("namespace", pod.Namespace),
+			attribute.String("pod", pod.Name),
+		),
+	)
+	defer span.End()
+	now := time.Now()
+	var out oas.PodResources
+	{
+		query := fmt.Sprintf(`sum(container_memory_working_set_bytes{namespace=%q, pod=~%q, image!="", container!=""}) by (container, id)`,
+			pod.Namespace, pod.Name,
+		)
+		memUsageTotal, err := h.getInstantQuery(ctx, now, query)
+		if err != nil {
+			return nil, errors.Wrap(err, "get memory usage")
+		}
+		out.MemUsageTotalBytes = int64(memUsageTotal)
+	}
+	{
+		query := fmt.Sprintf(`sum(rate(container_cpu_usage_seconds_total{namespace=%q, pod=~%q, image!="", container!="", cluster=""}[30s])) by (container, id)`,
+			pod.Namespace, pod.Name,
+		)
+		cpuUsageTotal, err := h.getInstantQuery(ctx, now, query)
+		if err != nil {
+			return nil, errors.Wrap(err, "get cpu usage")
+		}
+		out.CPUUsageTotalMillicores = cpuUsageTotal
+	}
+	return &out, nil
 }
 
 func (h *Handler) GetApplication(ctx context.Context, params oas.GetApplicationParams) (*oas.ApplicationSummary, error) {
@@ -61,10 +139,15 @@ func (h *Handler) GetApplication(ctx context.Context, params oas.GetApplicationP
 			return nil, errors.Wrap(err, "list pods")
 		}
 		for _, pod := range pods.Items {
+			res, err := h.getPorResources(ctx, pod)
+			if err != nil {
+				return nil, errors.Wrap(err, "get pod resources")
+			}
 			summary.Pods = append(summary.Pods, oas.Pod{
 				Name:      pod.Name,
 				Namespace: pod.Namespace,
 				Status:    string(pod.Status.Phase),
+				Resources: *res,
 			})
 		}
 	}
@@ -184,10 +267,12 @@ func (h *Handler) NewError(ctx context.Context, err error) *oas.ErrorStatusCode 
 
 func NewHandler(
 	kube *kubernetes.Clientset,
+	promClient *promapi.Client,
 	traceProvider trace.TracerProvider,
 ) *Handler {
 	return &Handler{
 		kube:  kube,
+		prom:  promClient,
 		trace: traceProvider.Tracer("vega.api"),
 	}
 }

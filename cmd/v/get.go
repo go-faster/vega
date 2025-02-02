@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/dustin/go-humanize"
 	"github.com/go-faster/errors"
 	"github.com/spf13/cobra"
 
@@ -20,10 +21,14 @@ func newGetCmd(a *Application) *cobra.Command {
 			if err != nil {
 				return errors.Wrap(err, "GetApplication")
 			}
-			cmd.Printf("%s %s\n", app.Name, app.Namespace)
+			cmd.Printf("%s (ns=%s)\n", app.Name, app.Namespace)
 			cmd.Printf("pods:\n")
 			for _, pod := range app.Pods {
-				cmd.Printf("  %s\n", pod.Name)
+				cmd.Printf("  %s (mem=%s, cpu=%f)\n",
+					pod.Name,
+					humanize.Bytes(uint64(pod.Resources.MemUsageTotalBytes)),
+					pod.Resources.CPUUsageTotalMillicores,
+				)
 			}
 			return nil
 		},

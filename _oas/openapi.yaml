@@ -133,13 +133,29 @@ components:
           type: string
           description: "Application namespace"
           example: "vega"
-
+    PodResources:
+      type: object
+      required:
+        - cpu_usage_total_millicores
+        - mem_usage_total_bytes
+      properties:
+        cpu_usage_total_millicores:
+          type: number
+          format: float64
+          description: "Total CPU usage in millicores"
+          example: 0.1
+        mem_usage_total_bytes:
+          type: integer
+          format: int64
+          description: "Total memory usage in bytes"
+          example: 1000000
     Pod:
       type: object
       required:
         - name
         - namespace
         - status
+        - resources
       properties:
         name:
           type: string
@@ -153,6 +169,8 @@ components:
           type: string
           description: "Pod status"
           example: "Running"
+        resources:
+          $ref: "#/components/schemas/PodResources"
 
     ApplicationSummary:
       type: object

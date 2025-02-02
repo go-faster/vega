@@ -83,6 +83,18 @@ func TestPod_EncodeDecode(t *testing.T) {
 	var typ2 Pod
 	require.NoError(t, typ2.Decode(jx.DecodeBytes(data)))
 }
+func TestPodResources_EncodeDecode(t *testing.T) {
+	var typ PodResources
+	typ.SetFake()
+
+	e := jx.Encoder{}
+	typ.Encode(&e)
+	data := e.Bytes()
+	require.True(t, std.Valid(data), "Encoded: %s", data)
+
+	var typ2 PodResources
+	require.NoError(t, typ2.Decode(jx.DecodeBytes(data)))
+}
 func TestSpanID_EncodeDecode(t *testing.T) {
 	var typ SpanID
 	typ.SetFake()

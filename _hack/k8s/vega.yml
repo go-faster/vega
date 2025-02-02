@@ -69,6 +69,8 @@ spec:
               value: "true"
             - name: PYROSCOPE_URL
               value: "http://pyroscope.monitoring.svc.cluster.local:4040"
+            - name: PROMAPI_URL
+              value: "http://vmselect-cluster.vm.svc.cluster.local:8481/select/0/prometheus"
 ---
 # service for simon-server
 apiVersion: v1

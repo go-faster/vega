@@ -44,3 +44,19 @@ go run ./cmd/vega-install
 export KUBECONFIG=_out/kubeconfig.yml
 kubectl get pods -n vega
 ```
+
+```console
+$ go install ./cmd/v
+$ v list
+name=simon.client       ns=simon
+name=simon.server       ns=simon
+name=vega.agent ns=vega
+name=vega.api   ns=vega
+name=vega.ingest        ns=vega
+$ v get simon.client
+simon.client (ns=simon)
+pods:
+  simon-client-64b86645bb-cph97 (mem=16 MB, cpu=0.001738)
+  simon-client-64b86645bb-snndl (mem=18 MB, cpu=0.002771)
+  simon-client-64b86645bb-xxzb2 (mem=16 MB, cpu=0.001121)
+```
