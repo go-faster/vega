@@ -81,25 +81,31 @@ func (h *Handler) getPodResources(ctx context.Context, pod v1.Pod) (*oas.PodReso
 	defer span.End()
 	now := time.Now()
 	var out oas.PodResources
-	{
+	g, ctx := errgroup.WithContext(ctx)
+	g.Go(func() error {
 		query := fmt.Sprintf(`sum(container_memory_working_set_bytes{namespace=%q, pod=~%q, image!="", container!=""}) by (container, id)`,
 			pod.Namespace, pod.Name,
 		)
 		memUsageTotal, err := h.getInstantQuery(ctx, now, query)
 		if err != nil {
-			return nil, errors.Wrap(err, "get memory usage")
+			return errors.Wrap(err, "get memory usage")
 		}
 		out.MemUsageTotalBytes = int64(memUsageTotal)
-	}
-	{
+		return nil
+	})
+	g.Go(func() error {
 		query := fmt.Sprintf(`sum(rate(container_cpu_usage_seconds_total{namespace=%q, pod=~%q, image!="", container!="", cluster=""}[30s])) by (container, id)`,
 			pod.Namespace, pod.Name,
 		)
 		cpuUsageTotal, err := h.getInstantQuery(ctx, now, query)
 		if err != nil {
-			return nil, errors.Wrap(err, "get cpu usage")
+			return errors.Wrap(err, "get cpu usage")
 		}
 		out.CPUUsageTotalMillicores = cpuUsageTotal
+		return nil
+	})
+	if err := g.Wait(); err != nil {
+		return nil, errors.Wrap(err, "getting pod resources")
 	}
 	return &out, nil
 }
@@ -130,27 +136,37 @@ func (h *Handler) GetApplication(ctx context.Context, params oas.GetApplicationP
 		Name:      app.Name,
 		Namespace: app.Namespace,
 	}
-	{
-		// Fetch pods.
-		pods, err := h.kube.CoreV1().Pods(app.Namespace).List(ctx, metav1.ListOptions{
-			LabelSelector: semconv.LabelVegaApp + "=" + app.Name,
-		})
-		if err != nil {
-			return nil, errors.Wrap(err, "list pods")
-		}
-		for _, pod := range pods.Items {
+	var mux sync.Mutex
+	pods, err := h.kube.CoreV1().Pods(app.Namespace).List(ctx, metav1.ListOptions{
+		LabelSelector: semconv.LabelVegaApp + "=" + app.Name,
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, "list pods")
+	}
+	g, ctx := errgroup.WithContext(ctx)
+	for _, pod := range pods.Items {
+		g.Go(func() error {
 			res, err := h.getPodResources(ctx, pod)
 			if err != nil {
-				return nil, errors.Wrap(err, "get pod resources")
+				return errors.Wrap(err, "get pod resources")
 			}
+			mux.Lock()
 			summary.Pods = append(summary.Pods, oas.Pod{
 				Name:      pod.Name,
 				Namespace: pod.Namespace,
 				Status:    string(pod.Status.Phase),
 				Resources: *res,
 			})
-		}
+			mux.Unlock()
+			return nil
+		})
 	}
+	if err := g.Wait(); err != nil {
+		return nil, errors.Wrap(err, "getting application summary")
+	}
+	slices.SortFunc(summary.Pods, func(a, b oas.Pod) int {
+		return strings.Compare(a.Name, b.Name)
+	})
 
 	return summary, nil
 }
