@@ -71,8 +71,8 @@ func (h *Handler) getInstantQuery(ctx context.Context, now time.Time, query stri
 	return out, nil
 }
 
-func (h *Handler) getPorResources(ctx context.Context, pod v1.Pod) (*oas.PodResources, error) {
-	ctx, span := h.trace.Start(ctx, "getPorResources",
+func (h *Handler) getPodResources(ctx context.Context, pod v1.Pod) (*oas.PodResources, error) {
+	ctx, span := h.trace.Start(ctx, "getPodResources",
 		trace.WithAttributes(
 			attribute.String("namespace", pod.Namespace),
 			attribute.String("pod", pod.Name),
@@ -139,7 +139,7 @@ func (h *Handler) GetApplication(ctx context.Context, params oas.GetApplicationP
 			return nil, errors.Wrap(err, "list pods")
 		}
 		for _, pod := range pods.Items {
-			res, err := h.getPorResources(ctx, pod)
+			res, err := h.getPodResources(ctx, pod)
 			if err != nil {
 				return nil, errors.Wrap(err, "get pod resources")
 			}
