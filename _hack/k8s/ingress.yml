@@ -76,3 +76,22 @@ spec:
                   number: 4040
             path: /
             pathType: Prefix
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: api
+  namespace: vega
+spec:
+  ingressClassName: cilium
+  rules:
+    - host: vega.localhost
+      http:
+        paths:
+          - backend:
+              service:
+                name: api
+                port:
+                  number: 8080
+            path: /
+            pathType: Prefix

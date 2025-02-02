@@ -21,6 +21,10 @@ spec:
         - name: api
           image: vega
           imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
           env:
             - name: OTEL_EXPORTER_OTLP_PROTOCOL
               value: "grpc"
