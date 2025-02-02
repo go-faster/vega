@@ -138,6 +138,8 @@ components:
       required:
         - cpu_usage_total_millicores
         - mem_usage_total_bytes
+        - net_rx_bytes_per_second
+        - net_tx_bytes_per_second
       properties:
         cpu_usage_total_millicores:
           type: number
@@ -149,6 +151,16 @@ components:
           format: int64
           description: "Total memory usage in bytes"
           example: 1000000
+        net_rx_bytes_per_second:
+          type: integer
+          format: int64
+          description: "Network receive bytes per second"
+          example: 1600
+        net_tx_bytes_per_second:
+          type: integer
+          format: int64
+          description: "Network transmit bytes per second"
+          example: 800
     Pod:
       type: object
       required:

@@ -24,10 +24,12 @@ func newGetCmd(a *Application) *cobra.Command {
 			cmd.Printf("%s (ns=%s)\n", app.Name, app.Namespace)
 			cmd.Printf("pods:\n")
 			for _, pod := range app.Pods {
-				cmd.Printf("  %s (mem=%s, cpu=%f)\n",
+				cmd.Printf("  %s (mem=%s, cpu=%f, rx=%s/s, tx=%s/s)\n",
 					pod.Name,
 					humanize.Bytes(uint64(pod.Resources.MemUsageTotalBytes)),
 					pod.Resources.CPUUsageTotalMillicores,
+					humanize.Bytes(uint64(pod.Resources.NetRxBytesPerSecond)),
+					humanize.Bytes(uint64(pod.Resources.NetTxBytesPerSecond)),
 				)
 			}
 			return nil

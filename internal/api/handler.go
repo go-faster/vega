@@ -104,9 +104,33 @@ func (h *Handler) getPodResources(ctx context.Context, pod v1.Pod) (*oas.PodReso
 		out.CPUUsageTotalMillicores = cpuUsageTotal
 		return nil
 	})
+	duration := time.Second * 30
+	g.Go(func() error {
+		query := fmt.Sprintf(`sum(rate(container_network_receive_bytes_total{namespace=%q, pod=~%q, cluster=""}[%s]))`,
+			pod.Namespace, pod.Name, duration,
+		)
+		v, err := h.getInstantQuery(ctx, now, query)
+		if err != nil {
+			return errors.Wrap(err, "get rx")
+		}
+		out.NetRxBytesPerSecond = int64(v)
+		return nil
+	})
+	g.Go(func() error {
+		query := fmt.Sprintf(`sum(rate(container_network_transmit_bytes_total{namespace=%q, pod=~%q, cluster=""}[%s]))`,
+			pod.Namespace, pod.Name, duration,
+		)
+		v, err := h.getInstantQuery(ctx, now, query)
+		if err != nil {
+			return errors.Wrap(err, "get tx")
+		}
+		out.NetTxBytesPerSecond = int64(v)
+		return nil
+	})
 	if err := g.Wait(); err != nil {
 		return nil, errors.Wrap(err, "getting pod resources")
 	}
+
 	return &out, nil
 }
 

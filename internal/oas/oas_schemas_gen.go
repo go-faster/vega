@@ -346,6 +346,10 @@ type PodResources struct {
 	CPUUsageTotalMillicores float64 `json:"cpu_usage_total_millicores"`
 	// Total memory usage in bytes.
 	MemUsageTotalBytes int64 `json:"mem_usage_total_bytes"`
+	// Network receive bytes per second.
+	NetRxBytesPerSecond int64 `json:"net_rx_bytes_per_second"`
+	// Network transmit bytes per second.
+	NetTxBytesPerSecond int64 `json:"net_tx_bytes_per_second"`
 }
 
 // GetCPUUsageTotalMillicores returns the value of CPUUsageTotalMillicores.
@@ -358,6 +362,16 @@ func (s *PodResources) GetMemUsageTotalBytes() int64 {
 	return s.MemUsageTotalBytes
 }
 
+// GetNetRxBytesPerSecond returns the value of NetRxBytesPerSecond.
+func (s *PodResources) GetNetRxBytesPerSecond() int64 {
+	return s.NetRxBytesPerSecond
+}
+
+// GetNetTxBytesPerSecond returns the value of NetTxBytesPerSecond.
+func (s *PodResources) GetNetTxBytesPerSecond() int64 {
+	return s.NetTxBytesPerSecond
+}
+
 // SetCPUUsageTotalMillicores sets the value of CPUUsageTotalMillicores.
 func (s *PodResources) SetCPUUsageTotalMillicores(val float64) {
 	s.CPUUsageTotalMillicores = val
@@ -366,6 +380,16 @@ func (s *PodResources) SetCPUUsageTotalMillicores(val float64) {
 // SetMemUsageTotalBytes sets the value of MemUsageTotalBytes.
 func (s *PodResources) SetMemUsageTotalBytes(val int64) {
 	s.MemUsageTotalBytes = val
+}
+
+// SetNetRxBytesPerSecond sets the value of NetRxBytesPerSecond.
+func (s *PodResources) SetNetRxBytesPerSecond(val int64) {
+	s.NetRxBytesPerSecond = val
+}
+
+// SetNetTxBytesPerSecond sets the value of NetTxBytesPerSecond.
+func (s *PodResources) SetNetTxBytesPerSecond(val int64) {
+	s.NetTxBytesPerSecond = val
 }
 
 type SpanID string

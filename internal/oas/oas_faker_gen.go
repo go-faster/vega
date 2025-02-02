@@ -159,6 +159,16 @@ func (s *PodResources) SetFake() {
 			s.MemUsageTotalBytes = int64(0)
 		}
 	}
+	{
+		{
+			s.NetRxBytesPerSecond = int64(0)
+		}
+	}
+	{
+		{
+			s.NetTxBytesPerSecond = int64(0)
+		}
+	}
 }
 
 // SetFake set fake values.
