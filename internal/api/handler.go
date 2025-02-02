@@ -1,8 +1,12 @@
+// Package api implements vega API handler.
 package api
 
 import (
 	"context"
+	"runtime/debug"
+	"time"
 
+	"github.com/go-faster/errors"
 	"go.opentelemetry.io/otel/trace"
 	"k8s.io/client-go/kubernetes"
 
@@ -17,11 +21,34 @@ type Handler struct {
 }
 
 func (h Handler) GetHealth(ctx context.Context) (*oas.Health, error) {
+	buildInfo, ok := debug.ReadBuildInfo()
+	if !ok {
+		return nil, errors.New("failed to read build info")
+	}
+
+	var commit string
+	var buildDate time.Time
+
+	for _, setting := range buildInfo.Settings {
+		switch setting.Key {
+		case "vcs.revision":
+			commit = setting.Value
+		case "vcs.time":
+			buildDate, _ = time.Parse(time.RFC3339, setting.Value)
+		case "vcs.modified":
+			if setting.Value == "true" {
+				commit += "-modified"
+			}
+		}
+	}
+
 	return &oas.Health{
-		Status: "ok",
+		Status:    "ok",
+		Version:   buildInfo.Main.Version,
+		BuildDate: buildDate,
+		Commit:    commit,
 	}, nil
 }
-
 func (h Handler) NewError(ctx context.Context, err error) *oas.ErrorStatusCode {
 	var (
 		traceID oas.OptTraceID

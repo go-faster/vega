@@ -1,3 +1,4 @@
+// Package kube implements Kubernetes helpers.
 package kube
 
 import (
