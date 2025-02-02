@@ -23,6 +23,13 @@ spec:
         - name: ingest
           image: ghcr.io/go-faster/simon:0.7.0
           args: ["client"]
+          resources:
+            limits:
+              cpu: 2500m
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
           env:
             - name: OTEL_EXPORTER_OTLP_PROTOCOL
               value: "grpc"
@@ -66,6 +73,13 @@ spec:
         - name: ingest
           image: ghcr.io/go-faster/simon:0.7.0
           args: ["server"]
+          resources:
+            limits:
+              cpu: 2500m
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
           env:
             - name: OTEL_EXPORTER_OTLP_PROTOCOL
               value: "grpc"
