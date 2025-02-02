@@ -20,16 +20,16 @@ spec:
         vega.app: simon.client
     spec:
       containers:
-        - name: ingest
+        - name: client
           image: ghcr.io/go-faster/simon:0.7.0
           args: ["client"]
           resources:
             limits:
-              cpu: 2500m
-              memory: 512Mi
+              cpu: 200m
+              memory: 128Mi
             requests:
               cpu: 100m
-              memory: 256Mi
+              memory: 64Mi
           env:
             - name: OTEL_EXPORTER_OTLP_PROTOCOL
               value: "grpc"
@@ -70,16 +70,16 @@ spec:
         vega.app: simon.server
     spec:
       containers:
-        - name: ingest
+        - name: server
           image: ghcr.io/go-faster/simon:0.7.0
           args: ["server"]
           resources:
             limits:
-              cpu: 2500m
-              memory: 512Mi
+              cpu: 200m
+              memory: 128Mi
             requests:
               cpu: 100m
-              memory: 256Mi
+              memory: 64Mi
           env:
             - name: OTEL_EXPORTER_OTLP_PROTOCOL
               value: "grpc"

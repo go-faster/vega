@@ -121,7 +121,7 @@ func (k KubeDelete) Run(ctx context.Context) error {
 		b = kubectlBin
 	}
 	arg := []string{
-		"delete", "-f", k.File,
+		"delete", "--ignore-not-found=true", "-f", k.File,
 	}
 	if k.KubeConfig != "" {
 		arg = append(arg, "--kubeconfig", k.KubeConfig)
