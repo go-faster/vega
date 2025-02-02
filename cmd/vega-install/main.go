@@ -131,15 +131,6 @@ func run(ctx context.Context) error {
 			KubeConfig:      kubeConfig,
 		},
 		&installer.HelmUpgrade{
-			Name:            "monitoring",
-			Chart:           "grafana/k8s-monitoring",
-			Install:         true,
-			Values:          file("k8s-monitoring.yml"),
-			Namespace:       "monitoring",
-			CreateNamespace: true,
-			KubeConfig:      kubeConfig,
-		},
-		&installer.HelmUpgrade{
 			Name:            "vmo",
 			Chart:           "vm/victoria-metrics-operator",
 			Install:         true,
@@ -219,6 +210,10 @@ func run(ctx context.Context) error {
 		},
 		&installer.KubeApply{
 			File:       file("k8s"),
+			KubeConfig: kubeConfig,
+		},
+		&installer.KubeCreate{
+			File:       file("k8s-create"),
 			KubeConfig: kubeConfig,
 		},
 	}
