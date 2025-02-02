@@ -81,7 +81,7 @@ jobs:
           KUBECONFIG: _out/kubeconfig.yml
 
       - name: Wait for vega api
-        run: kubectl -n vega rollout status --timeout=2m daemonset api
+        run: kubectl -n vega rollout status --timeout=2m deployment api
         env:
           KUBECONFIG: _out/kubeconfig.yml
 
