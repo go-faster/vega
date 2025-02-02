@@ -5,6 +5,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/go-faster/errors"
@@ -27,7 +28,8 @@ func main() {
 		if err != nil {
 			return errors.Wrap(err, "kube.New")
 		}
-		client, err := promapi.NewClient(os.Getenv("PROMAPI_URL"),
+		promURL := os.Getenv("PROMAPI_URL")
+		client, err := promapi.NewClient(promURL,
 			promapi.WithTracerProvider(t.TracerProvider()),
 			promapi.WithMeterProvider(t.MeterProvider()),
 			promapi.WithClient(&http.Client{
@@ -36,11 +38,20 @@ func main() {
 					otelhttp.WithTracerProvider(t.TracerProvider()),
 					otelhttp.WithPropagators(t.TextMapPropagator()),
 					otelhttp.WithSpanNameFormatter(func(operation string, r *http.Request) string {
-						route, ok := (&promapi.Server{}).FindPath(r.Method, r.URL)
+						parsedURL, err := r.URL.Parse(promURL)
+						if err != nil {
+							return operation
+						}
+						// Trip prefix from parsed URL.
+						trimmedPath := strings.TrimPrefix(r.URL.Path, parsedURL.Path)
+						route, ok := (&promapi.Server{}).FindRoute(r.Method, trimmedPath)
 						if !ok {
 							return operation
 						}
 						if v := route.Name(); v != "" {
+							return "client." + v
+						}
+						if v := route.PathPattern(); v != "" {
 							return v
 						}
 						return operation
