@@ -11,6 +11,75 @@ func (s *ErrorStatusCode) Error() string {
 	return fmt.Sprintf("code %d: %+v", s.StatusCode, s.Response)
 }
 
+// Ref: #/components/schemas/Application
+type Application struct {
+	// Application name.
+	Name string `json:"name"`
+	// Application namespace.
+	Namespace string `json:"namespace"`
+}
+
+// GetName returns the value of Name.
+func (s *Application) GetName() string {
+	return s.Name
+}
+
+// GetNamespace returns the value of Namespace.
+func (s *Application) GetNamespace() string {
+	return s.Namespace
+}
+
+// SetName sets the value of Name.
+func (s *Application) SetName(val string) {
+	s.Name = val
+}
+
+// SetNamespace sets the value of Namespace.
+func (s *Application) SetNamespace(val string) {
+	s.Namespace = val
+}
+
+type ApplicationList []Application
+
+// Ref: #/components/schemas/ApplicationSummary
+type ApplicationSummary struct {
+	// Application name.
+	Name string `json:"name"`
+	// Application namespace.
+	Namespace string `json:"namespace"`
+	Pods      []Pod  `json:"pods"`
+}
+
+// GetName returns the value of Name.
+func (s *ApplicationSummary) GetName() string {
+	return s.Name
+}
+
+// GetNamespace returns the value of Namespace.
+func (s *ApplicationSummary) GetNamespace() string {
+	return s.Namespace
+}
+
+// GetPods returns the value of Pods.
+func (s *ApplicationSummary) GetPods() []Pod {
+	return s.Pods
+}
+
+// SetName sets the value of Name.
+func (s *ApplicationSummary) SetName(val string) {
+	s.Name = val
+}
+
+// SetNamespace sets the value of Namespace.
+func (s *ApplicationSummary) SetNamespace(val string) {
+	s.Namespace = val
+}
+
+// SetPods sets the value of Pods.
+func (s *ApplicationSummary) SetPods(val []Pod) {
+	s.Pods = val
+}
+
 // Error occurred while processing request.
 // Ref: #/components/schemas/Error
 type Error struct {
@@ -218,6 +287,46 @@ func (o OptTraceID) Or(d TraceID) TraceID {
 		return v
 	}
 	return d
+}
+
+// Ref: #/components/schemas/Pod
+type Pod struct {
+	// Pod name.
+	Name string `json:"name"`
+	// Pod namespace.
+	Namespace string `json:"namespace"`
+	// Pod status.
+	Status string `json:"status"`
+}
+
+// GetName returns the value of Name.
+func (s *Pod) GetName() string {
+	return s.Name
+}
+
+// GetNamespace returns the value of Namespace.
+func (s *Pod) GetNamespace() string {
+	return s.Namespace
+}
+
+// GetStatus returns the value of Status.
+func (s *Pod) GetStatus() string {
+	return s.Status
+}
+
+// SetName sets the value of Name.
+func (s *Pod) SetName(val string) {
+	s.Name = val
+}
+
+// SetNamespace sets the value of Namespace.
+func (s *Pod) SetNamespace(val string) {
+	s.Namespace = val
+}
+
+// SetStatus sets the value of Status.
+func (s *Pod) SetStatus(val string) {
+	s.Status = val
 }
 
 type SpanID string

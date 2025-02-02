@@ -1,3 +1,35 @@
+# ClusterRole to list namespaces and pods
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: vega
+  namespace: vega
+rules:
+  - apiGroups: [""]
+    resources: ["namespaces", "pods"]
+    verbs: ["get", "list"]
+---
+# ServiceAccount
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: vega-sa
+  namespace: vega
+---
+# ClusterRoleBinding to bind the ClusterRole to the ServiceAccount
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: vega-binding
+  namespace: vega
+subjects:
+  - kind: ServiceAccount
+    name: vega-sa
+    namespace: vega
+roleRef:
+  kind: ClusterRole
+  name: vega
+  apiGroup: rbac.authorization.k8s.io
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -17,6 +49,7 @@ spec:
         app.kubernetes.io/name: vega.api
         app.kubernetes.io/part-of: vega
     spec:
+      serviceAccountName: vega-sa
       containers:
         - name: api
           image: vega

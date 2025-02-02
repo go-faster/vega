@@ -13,6 +13,24 @@ type UnimplementedHandler struct{}
 
 var _ Handler = UnimplementedHandler{}
 
+// GetApplication implements getApplication operation.
+//
+// Get application.
+//
+// GET /applications/{name}
+func (UnimplementedHandler) GetApplication(ctx context.Context, params GetApplicationParams) (r *ApplicationSummary, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
+// GetApplications implements getApplications operation.
+//
+// Get application list.
+//
+// GET /applications
+func (UnimplementedHandler) GetApplications(ctx context.Context) (r ApplicationList, _ error) {
+	return r, ht.ErrNotImplemented
+}
+
 // GetHealth implements getHealth operation.
 //
 // Get health.

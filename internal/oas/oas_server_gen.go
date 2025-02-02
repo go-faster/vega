@@ -8,6 +8,18 @@ import (
 
 // Handler handles operations described by OpenAPI v3 specification.
 type Handler interface {
+	// GetApplication implements getApplication operation.
+	//
+	// Get application.
+	//
+	// GET /applications/{name}
+	GetApplication(ctx context.Context, params GetApplicationParams) (*ApplicationSummary, error)
+	// GetApplications implements getApplications operation.
+	//
+	// Get application list.
+	//
+	// GET /applications
+	GetApplications(ctx context.Context) (ApplicationList, error)
 	// GetHealth implements getHealth operation.
 	//
 	// Get health.

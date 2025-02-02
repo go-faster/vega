@@ -71,13 +71,19 @@ func run(ctx context.Context) error {
 		},
 		&installer.KubeRestart{
 			Target:     "daemonset",
-			Name:       "vega-agent",
+			Name:       "agent",
 			Namespace:  "vega",
 			KubeConfig: kubeConfig,
 		},
 		&installer.KubeRestart{
 			Target:     "deployment",
-			Name:       "vega-ingest",
+			Name:       "ingest",
+			Namespace:  "vega",
+			KubeConfig: kubeConfig,
+		},
+		&installer.KubeRestart{
+			Target:     "deployment",
+			Name:       "api",
 			Namespace:  "vega",
 			KubeConfig: kubeConfig,
 		},

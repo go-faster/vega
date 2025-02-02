@@ -11,6 +11,42 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestApplication_EncodeDecode(t *testing.T) {
+	var typ Application
+	typ.SetFake()
+
+	e := jx.Encoder{}
+	typ.Encode(&e)
+	data := e.Bytes()
+	require.True(t, std.Valid(data), "Encoded: %s", data)
+
+	var typ2 Application
+	require.NoError(t, typ2.Decode(jx.DecodeBytes(data)))
+}
+func TestApplicationList_EncodeDecode(t *testing.T) {
+	var typ ApplicationList
+	typ.SetFake()
+
+	e := jx.Encoder{}
+	typ.Encode(&e)
+	data := e.Bytes()
+	require.True(t, std.Valid(data), "Encoded: %s", data)
+
+	var typ2 ApplicationList
+	require.NoError(t, typ2.Decode(jx.DecodeBytes(data)))
+}
+func TestApplicationSummary_EncodeDecode(t *testing.T) {
+	var typ ApplicationSummary
+	typ.SetFake()
+
+	e := jx.Encoder{}
+	typ.Encode(&e)
+	data := e.Bytes()
+	require.True(t, std.Valid(data), "Encoded: %s", data)
+
+	var typ2 ApplicationSummary
+	require.NoError(t, typ2.Decode(jx.DecodeBytes(data)))
+}
 func TestError_EncodeDecode(t *testing.T) {
 	var typ Error
 	typ.SetFake()
@@ -33,6 +69,18 @@ func TestHealth_EncodeDecode(t *testing.T) {
 	require.True(t, std.Valid(data), "Encoded: %s", data)
 
 	var typ2 Health
+	require.NoError(t, typ2.Decode(jx.DecodeBytes(data)))
+}
+func TestPod_EncodeDecode(t *testing.T) {
+	var typ Pod
+	typ.SetFake()
+
+	e := jx.Encoder{}
+	typ.Encode(&e)
+	data := e.Bytes()
+	require.True(t, std.Valid(data), "Encoded: %s", data)
+
+	var typ2 Pod
 	require.NoError(t, typ2.Decode(jx.DecodeBytes(data)))
 }
 func TestSpanID_EncodeDecode(t *testing.T) {

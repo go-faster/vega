@@ -4,7 +4,7 @@ info:
   description: vega api
   version: 1.0.0
 servers:
-  - url: 'http://localhost:8080'
+  - url: 'http://vega.localhost'
 paths:
   /health:
     get:
@@ -17,6 +17,39 @@ paths:
             "application/json":
               schema:
                 $ref: "#/components/schemas/Health"
+        default:
+          $ref:  "#/components/responses/Error"
+  /applications:
+    get:
+      operationId: "getApplications"
+      description: "get application list"
+      responses:
+        200:
+          description: Application list
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/ApplicationList"
+        default:
+          $ref:  "#/components/responses/Error"
+  /applications/{name}:
+    get:
+      operationId: "getApplication"
+      description: "get application"
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: "Application name"
+      responses:
+        200:
+          description: Application
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/ApplicationSummary"
         default:
           $ref:  "#/components/responses/Error"
 components:
@@ -84,6 +117,68 @@ components:
           description: "Service build date"
           example: "2022-01-01T00:00:00Z"
           format: date-time
+
+    # API.
+    Application:
+      type: object
+      required:
+        - name
+        - namespace
+      properties:
+        name:
+          type: string
+          description: "Application name"
+          example: "api"
+        namespace:
+          type: string
+          description: "Application namespace"
+          example: "vega"
+
+    Pod:
+      type: object
+      required:
+        - name
+        - namespace
+        - status
+      properties:
+        name:
+          type: string
+          description: "Pod name"
+          example: "api-123456"
+        namespace:
+          type: string
+          description: "Pod namespace"
+          example: "vega"
+        status:
+          type: string
+          description: "Pod status"
+          example: "Running"
+
+    ApplicationSummary:
+      type: object
+      required:
+        - name
+        - namespace
+      properties:
+        name:
+          type: string
+          description: "Application name"
+          example: "api"
+        namespace:
+          type: string
+          description: "Application namespace"
+          example: "vega"
+        pods:
+          type: array
+          items:
+            $ref: "#/components/schemas/Pod"
+
+
+    ApplicationList:
+      type: array
+      items:
+        $ref: "#/components/schemas/Application"
+
   responses:
     Error:
       description: Structured error response.

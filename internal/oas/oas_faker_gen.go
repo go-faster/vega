@@ -7,6 +7,62 @@ import (
 )
 
 // SetFake set fake values.
+func (s *Application) SetFake() {
+	{
+		{
+			s.Name = "string"
+		}
+	}
+	{
+		{
+			s.Namespace = "string"
+		}
+	}
+}
+
+// SetFake set fake values.
+func (s *ApplicationList) SetFake() {
+	var unwrapped []Application
+	{
+		unwrapped = nil
+		for i := 0; i < 0; i++ {
+			var elem Application
+			{
+				elem.SetFake()
+			}
+			unwrapped = append(unwrapped, elem)
+		}
+	}
+	*s = ApplicationList(unwrapped)
+}
+
+// SetFake set fake values.
+func (s *ApplicationSummary) SetFake() {
+	{
+		{
+			s.Name = "string"
+		}
+	}
+	{
+		{
+			s.Namespace = "string"
+		}
+	}
+	{
+		{
+			s.Pods = nil
+			for i := 0; i < 0; i++ {
+				var elem Pod
+				{
+					elem.SetFake()
+				}
+				s.Pods = append(s.Pods, elem)
+			}
+		}
+	}
+}
+
+// SetFake set fake values.
 func (s *Error) SetFake() {
 	{
 		{
@@ -65,6 +121,25 @@ func (s *OptTraceID) SetFake() {
 		elem.SetFake()
 	}
 	s.SetTo(elem)
+}
+
+// SetFake set fake values.
+func (s *Pod) SetFake() {
+	{
+		{
+			s.Name = "string"
+		}
+	}
+	{
+		{
+			s.Namespace = "string"
+		}
+	}
+	{
+		{
+			s.Status = "string"
+		}
+	}
 }
 
 // SetFake set fake values.

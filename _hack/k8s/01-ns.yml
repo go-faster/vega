@@ -3,6 +3,9 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: vega
+  labels:
+    vega.app: simon
+    app.kubernetes.io/part-of: simon
 ---
 apiVersion: v1
 kind: Namespace

@@ -8,6 +8,14 @@ import (
 	"github.com/ogen-go/ogen/validate"
 )
 
+func (s ApplicationList) Validate() error {
+	alias := ([]Application)(s)
+	if alias == nil {
+		return errors.New("nil is invalid value")
+	}
+	return nil
+}
+
 func (s *Error) Validate() error {
 	if s == nil {
 		return validate.ErrNilPointer
