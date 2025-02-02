@@ -53,6 +53,8 @@ spec:
               value: "true"
             - name: PYROSCOPE_URL
               value: "http://pyroscope.monitoring.svc.cluster.local:4040"
+            - name: GOMEMLIMIT
+              value: "32MiB"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -103,6 +105,8 @@ spec:
               value: "true"
             - name: PYROSCOPE_URL
               value: "http://pyroscope.monitoring.svc.cluster.local:4040"
+            - name: GOMEMLIMIT
+              value: "32MiB"
 ---
 # service for simon-server
 apiVersion: v1
