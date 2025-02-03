@@ -13,7 +13,7 @@ metadata:
   name: simon-client
   namespace: simon
 spec:
-  replicas: 3
+  replicas: 12
   selector:
     matchLabels:
       vega.app: simon.client
@@ -26,8 +26,11 @@ spec:
     spec:
       containers:
         - name: client
-          image: ghcr.io/go-faster/simon:0.7.0
-          args: ["client"]
+          image: ghcr.io/go-faster/simon:0.8.0
+          args:
+            - "client"
+            - --upload-rps=1
+            - --upload-hash-iterations=500
           resources:
             limits:
               cpu: 50m
@@ -80,7 +83,7 @@ spec:
     spec:
       containers:
         - name: server
-          image: ghcr.io/go-faster/simon:0.7.0
+          image: ghcr.io/go-faster/simon:0.8.0
           args: ["server"]
           resources:
             limits:
