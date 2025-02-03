@@ -90,13 +90,13 @@ func main() {
 			),
 			ReadHeaderTimeout: time.Second,
 			BaseContext: func(listener net.Listener) context.Context {
-				return ctx
+				return zctx.WithOpenTelemetryZap(t.BaseContext())
 			},
 		}
 		g, ctx := errgroup.WithContext(ctx)
 		g.Go(func() error {
 			<-t.ShutdownContext().Done()
-			return h.Shutdown(ctx)
+			return h.Shutdown(t.BaseContext())
 		})
 		g.Go(func() error {
 			lg.Info("Server started", zap.String("addr", h.Addr))
