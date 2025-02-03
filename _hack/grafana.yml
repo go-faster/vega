@@ -63,8 +63,8 @@ datasources:
             # Field with an internal link pointing to a logs data source in Grafana.
             # datasourceUid value must match the uid value of the logs data source.
             datasourceUid: logql
-            spanStartTimeShift: '1h'
-            spanEndTimeShift: '-1h'
+            spanStartTimeShift: '-1h'
+            spanEndTimeShift: '1h'
             filterByTraceID: true
             filterBySpanID: false
             tags:
@@ -72,11 +72,14 @@ datasources:
                 value: service_name
           tracesToMetrics:
             datasourceUid: victoria
-            spanStartTimeShift: '1h'
-            spanEndTimeShift: '-1h'
+            spanStartTimeShift: '-1h'
+            spanEndTimeShift: '1h'
             tags:
               - key: service.name
                 value: service_name
+          tracesToProfiles:
+            datasourceUid: 'pyroscope'
+            profileTypeId: 'process_cpu:cpu:nanoseconds:cpu:nanoseconds'
           nodeGraph:
             enabled: true
           serviceMap:
@@ -96,20 +99,23 @@ datasources:
             # Field with an internal link pointing to a logs data source in Grafana.
             # datasourceUid value must match the uid value of the logs data source.
             datasourceUid: loki
-            spanStartTimeShift: '1h'
-            spanEndTimeShift: '-1h'
+            spanStartTimeShift: '-1h'
+            spanEndTimeShift: '1h'
             filterByTraceID: true
-            filterBySpanID: false
+            filterBySpanID: true
             tags:
               - key: service.name
                 value: service_name
           tracesToMetrics:
             datasourceUid: victoria
-            spanStartTimeShift: '1h'
-            spanEndTimeShift: '-1h'
+            spanStartTimeShift: '-1h'
+            spanEndTimeShift: '1h'
             tags:
               - key: service.name
                 value: service_name
+          tracesToProfiles:
+            datasourceUid: 'pyroscope'
+            profileTypeId: 'process_cpu:cpu:nanoseconds:cpu:nanoseconds'
           nodeGraph:
             enabled: true
           serviceMap:
@@ -142,7 +148,14 @@ datasources:
         uid: loki
         jsonData:
           serviceMap:
-            datasourceUid: prometheus
+            datasourceUid: victoria
+
+          derivedFields:
+            - datasourceUid: tempo
+              matcherRegex: '"traceid":"([0-9a-f]+)"'
+              name: trace
+              url: '$${__value.raw}'
+              urlDisplayLabel: 'View Trace'
 
       - name: "oteldb: PromQL"
         type: prometheus
