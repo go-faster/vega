@@ -95,7 +95,7 @@ func main() {
 		}
 		g, ctx := errgroup.WithContext(ctx)
 		g.Go(func() error {
-			<-ctx.Done()
+			<-t.ShutdownContext().Done()
 			return h.Shutdown(ctx)
 		})
 		g.Go(func() error {

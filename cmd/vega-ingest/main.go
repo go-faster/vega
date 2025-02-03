@@ -25,7 +25,7 @@ func main() {
 		if err != nil {
 			return errors.Wrap(err, "init")
 		}
-		return a.Run(ctx)
+		return a.Run(m.ShutdownContext())
 	}, app.WithServiceName("vega.ingest"))
 }
 

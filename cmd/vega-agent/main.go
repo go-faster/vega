@@ -29,7 +29,7 @@ func main() {
 		if err != nil {
 			return errors.Wrap(err, "create kafka producer")
 		}
-		g, ctx := errgroup.WithContext(ctx)
+		g, ctx := errgroup.WithContext(m.ShutdownContext())
 		g.Go(func() error {
 			// Hubble component.
 			const (
