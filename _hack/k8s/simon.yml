@@ -33,10 +33,10 @@ spec:
             - --upload-hash-iterations=500
           resources:
             limits:
-              cpu: 50m
-              memory: 32Mi
+              cpu: 500m
+              memory: 128Mi
             requests:
-              cpu: 50m
+              cpu: 500m
               memory: 32Mi
           env:
             - name: OTEL_EXPORTER_OTLP_PROTOCOL
@@ -87,10 +87,10 @@ spec:
           args: ["server"]
           resources:
             limits:
-              cpu: 50m
-              memory: 32Mi
+              cpu: 1500m
+              memory: 128Mi
             requests:
-              cpu: 50m
+              cpu: 500m
               memory: 32Mi
           env:
             - name: OTEL_EXPORTER_OTLP_PROTOCOL

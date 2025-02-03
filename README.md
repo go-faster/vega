@@ -53,10 +53,25 @@ name=simon.server       ns=simon
 name=vega.agent ns=vega
 name=vega.api   ns=vega
 name=vega.ingest        ns=vega
+$ v get simon.server
+simon.server (ns=simon)
+pods:
+  simon-server-9f69cf65d-lhwk8 (mem=30 MB, cpu=1.013640, rx=3.9 MB/s, tx=29 kB/s)
+  simon-server-9f69cf65d-nb6jz (mem=27 MB, cpu=0.864854, rx=4.7 MB/s, tx=39 kB/s)
+  simon-server-9f69cf65d-v2tg4 (mem=29 MB, cpu=0.860625, rx=4.7 MB/s, tx=34 kB/s)
 $ v get simon.client
 simon.client (ns=simon)
 pods:
-  simon-client-64b86645bb-cph97 (mem=16 MB, cpu=0.001738)
-  simon-client-64b86645bb-snndl (mem=18 MB, cpu=0.002771)
-  simon-client-64b86645bb-xxzb2 (mem=16 MB, cpu=0.001121)
+  simon-client-6b4947b797-2dn2n (mem=19 MB, cpu=0.282894, rx=2.5 kB/s, tx=994 kB/s)
+  simon-client-6b4947b797-444dk (mem=19 MB, cpu=0.146285, rx=2.8 kB/s, tx=1.1 MB/s)
+  simon-client-6b4947b797-4ftnq (mem=19 MB, cpu=0.267662, rx=4.4 kB/s, tx=1.2 MB/s)
+  simon-client-6b4947b797-5fvd8 (mem=17 MB, cpu=0.116613, rx=2.0 kB/s, tx=1.1 MB/s)
+  simon-client-6b4947b797-7fkwb (mem=18 MB, cpu=0.214541, rx=2.6 kB/s, tx=924 kB/s)
+  simon-client-6b4947b797-82wv8 (mem=18 MB, cpu=0.132827, rx=4.3 kB/s, tx=1.1 MB/s)
+  simon-client-6b4947b797-9vsll (mem=19 MB, cpu=0.267073, rx=2.3 kB/s, tx=783 kB/s)
+  simon-client-6b4947b797-ffbhr (mem=18 MB, cpu=0.238145, rx=3.1 kB/s, tx=1.6 MB/s)
+  simon-client-6b4947b797-jl45t (mem=17 MB, cpu=0.242046, rx=2.0 kB/s, tx=1.2 MB/s)
+  simon-client-6b4947b797-qxzfp (mem=18 MB, cpu=0.238922, rx=2.4 kB/s, tx=924 kB/s)
+  simon-client-6b4947b797-sf94d (mem=17 MB, cpu=0.105813, rx=1.9 kB/s, tx=676 kB/s)
+  simon-client-6b4947b797-xsx7c (mem=17 MB, cpu=0.248820, rx=2.0 kB/s, tx=1.1 MB/s)
 ```
