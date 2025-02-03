@@ -95,8 +95,12 @@ func main() {
 		}
 		g, ctx := errgroup.WithContext(ctx)
 		g.Go(func() error {
-			<-t.ShutdownContext().Done()
-			return h.Shutdown(t.BaseContext())
+			select {
+			case <-ctx.Done():
+				return ctx.Err()
+			case <-t.ShutdownContext().Done():
+				return h.Shutdown(t.BaseContext())
+			}
 		})
 		g.Go(func() error {
 			lg.Info("Server started", zap.String("addr", h.Addr))
