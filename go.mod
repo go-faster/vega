@@ -9,7 +9,7 @@ require (
 	entgo.io/ent v0.14.1
 	github.com/ClickHouse/ch-go v0.64.1
 	github.com/cenkalti/backoff/v4 v4.3.0
-	github.com/cilium/cilium v1.17.0-rc.2
+	github.com/cilium/cilium v1.17.0
 	github.com/dustin/go-humanize v1.0.1
 	github.com/go-faster/errors v0.7.1
 	github.com/go-faster/jx v1.1.0
