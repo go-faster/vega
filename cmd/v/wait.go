@@ -32,7 +32,7 @@ func newWaitCmd(a *Application) *cobra.Command {
 				cmd.Printf("Waiting for vega api to be ready: %v\n", err)
 			}); err != nil {
 				res, getHealthErr := http.Get("http://vega.localhost/health")
-				if err != nil {
+				if getHealthErr != nil {
 					return errors.Wrap(getHealthErr, "http.Get")
 				}
 				defer func() {
