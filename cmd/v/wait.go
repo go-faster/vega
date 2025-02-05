@@ -16,7 +16,7 @@ func newWaitCmd(a *Application) *cobra.Command {
 			ctx := cmd.Context()
 			bo := backoff.NewExponentialBackOff()
 			bo.MaxInterval = time.Second
-			bo.MaxElapsedTime = time.Minute * 5
+			bo.MaxElapsedTime = time.Minute * 15
 			bo.InitialInterval = time.Millisecond * 100
 
 			if err := backoff.RetryNotify(func() error {
