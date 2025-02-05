@@ -113,7 +113,7 @@ func run(ctx context.Context) error {
 			Namespace:       "clickhouse",
 			CreateNamespace: true,
 			KubeConfig:      kubeConfig,
-			Version:         "0.24.0",
+			Version:         "0.24.3",
 		},
 		&installer.HelmUpgrade{
 			Name:            "otel",
