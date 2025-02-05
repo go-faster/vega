@@ -31,15 +31,16 @@ func newWaitCmd(a *Application) *cobra.Command {
 			}, bo, func(err error, duration time.Duration) {
 				cmd.Printf("Waiting for vega api to be ready: %v\n", err)
 			}); err != nil {
-				res, err := http.Get("http://vega.localhost/health")
+				res, getHealthErr := http.Get("http://vega.localhost/health")
 				if err != nil {
-					return errors.Wrap(err, "http.Get")
+					return errors.Wrap(getHealthErr, "http.Get")
 				}
 				defer func() {
 					_ = res.Body.Close()
 				}()
 				_, _ = fmt.Fprintln(cmd.ErrOrStderr(), res.Status)
-				_, _ = io.Copy(cmd.OutOrStdout(), res.Body)
+				data, err := io.ReadAll(res.Body)
+				fmt.Fprintf(cmd.ErrOrStderr(), "Body: %q\n", data)
 				return errors.Wrap(err, "GetHealth")
 			}
 
