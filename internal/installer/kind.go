@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 
 	"github.com/cenkalti/backoff/v4"
 	"github.com/go-faster/errors"
@@ -83,6 +84,7 @@ type KindLoad struct {
 	Images     []string
 	ImagesFile string
 	KubeConfig string
+	Nodes      []string
 }
 
 func (k KindLoad) Step() StepInfo {
@@ -105,6 +107,9 @@ func (k KindLoad) Run(ctx context.Context) error {
 	arg := []string{
 		"load", "docker-image",
 		"--name", k.Name,
+	}
+	if len(k.Nodes) > 0 {
+		arg = append(arg, "--nodes", strings.Join(k.Nodes, ","))
 	}
 	if k.ImagesFile != "" {
 		// Each file line is an image.
