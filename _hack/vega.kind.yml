@@ -23,9 +23,7 @@ nodes:
           kubeletExtraArgs:
             node-labels: "ingress-ready=true"
     extraPortMappings:
-      - containerPort: 80
+      - containerPort: 8080
         hostPort: 80
         listenAddress: 127.0.0.1
         protocol: TCP
-
-
