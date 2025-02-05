@@ -26,7 +26,7 @@ spec:
     spec:
       containers:
         - name: client
-          image: ghcr.io/go-faster/simon:0.9.0
+          image: ghcr.io/go-faster/simon:0.9.1
           args:
             - "client"
             - --upload-rps=1
@@ -83,7 +83,7 @@ spec:
     spec:
       containers:
         - name: server
-          image: ghcr.io/go-faster/simon:0.9.0
+          image: ghcr.io/go-faster/simon:0.9.1
           args: ["server"]
           resources:
             limits:
