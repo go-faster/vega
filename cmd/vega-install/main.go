@@ -72,6 +72,11 @@ func run(ctx context.Context) error {
 			File:       file("monitoring.coreos.com_servicemonitors.yaml"),
 			KubeConfig: kubeConfig,
 		},
+		&installer.KindLoad{
+			Name:       "vega",
+			ImagesFile: file("images.txt"),
+			KubeConfig: kubeConfig,
+		},
 		&installer.HelmUpgrade{
 			Name:            "cilium",
 			Chart:           "cilium/cilium",
