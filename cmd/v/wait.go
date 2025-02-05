@@ -40,7 +40,7 @@ func newWaitCmd(a *Application) *cobra.Command {
 				}()
 				_, _ = fmt.Fprintln(cmd.ErrOrStderr(), res.Status)
 				data, err := io.ReadAll(res.Body)
-				fmt.Fprintf(cmd.ErrOrStderr(), "Body: %q\n", data)
+				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Body: %q\n", data)
 				return errors.Wrap(err, "GetHealth")
 			}
 
