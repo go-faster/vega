@@ -40,27 +40,6 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ingress-minio
-  namespace: minio
-  annotations:
-    ingress.cilium.io/tls-passthrough: enabled
-spec:
-  ingressClassName: cilium
-  rules:
-    - host: minio.localhost
-      http:
-        paths:
-          - backend:
-              service:
-                name: vega-console
-                port:
-                  number: 9443
-            path: /
-            pathType: Prefix
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
   name: pyroscope
   namespace: monitoring
 spec:
