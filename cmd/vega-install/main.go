@@ -143,6 +143,7 @@ func run(ctx context.Context) error {
 			Namespace:       "vm",
 			CreateNamespace: true,
 			KubeConfig:      kubeConfig,
+			Version:         "0.41.2",
 		},
 		&installer.HelmUpgrade{
 			Name:            "nats",
@@ -151,6 +152,7 @@ func run(ctx context.Context) error {
 			Namespace:       "nats",
 			CreateNamespace: true,
 			KubeConfig:      kubeConfig,
+			Version:         "1.2.10",
 		},
 		&installer.HelmUpgrade{
 			Name:            "operator",
@@ -159,14 +161,7 @@ func run(ctx context.Context) error {
 			Namespace:       "minio",
 			CreateNamespace: true,
 			KubeConfig:      kubeConfig,
-		},
-		&installer.HelmUpgrade{
-			Name:            "operator",
-			Chart:           "minio-operator/operator",
-			Install:         true,
-			Namespace:       "minio",
-			CreateNamespace: true,
-			KubeConfig:      kubeConfig,
+			Version:         "7.0.0",
 		},
 		&installer.HelmUpgrade{
 			Name:            "loki",
@@ -176,6 +171,7 @@ func run(ctx context.Context) error {
 			Values:          file("loki.yml"),
 			CreateNamespace: true,
 			KubeConfig:      kubeConfig,
+			Version:         "6.25.1",
 		},
 		&installer.HelmUpgrade{
 			Name:            "tempo",
@@ -185,6 +181,7 @@ func run(ctx context.Context) error {
 			Values:          file("tempo.yml"),
 			CreateNamespace: true,
 			KubeConfig:      kubeConfig,
+			Version:         "1.18.1",
 		},
 		&installer.HelmUpgrade{
 			Name:            "oncall",
@@ -194,6 +191,7 @@ func run(ctx context.Context) error {
 			Values:          file("oncall.yml"),
 			CreateNamespace: true,
 			KubeConfig:      kubeConfig,
+			Version:         "1.14.3",
 		},
 		&installer.HelmUpgrade{
 			Name:            "pyroscope",
@@ -203,6 +201,7 @@ func run(ctx context.Context) error {
 			Values:          file("pyroscope.yml"),
 			CreateNamespace: true,
 			KubeConfig:      kubeConfig,
+			Version:         "1.12.0",
 		},
 		&installer.HelmUpgrade{
 			Name:            "kube-state",
@@ -212,6 +211,7 @@ func run(ctx context.Context) error {
 			Values:          file("kube-state.yml"),
 			CreateNamespace: true,
 			KubeConfig:      kubeConfig,
+			Version:         "5.29.0",
 		},
 		&installer.HelmUpgrade{
 			Name:            "ingress-nginx",
@@ -222,6 +222,7 @@ func run(ctx context.Context) error {
 			CreateNamespace: true,
 			Repo:            "https://kubernetes.github.io/ingress-nginx",
 			KubeConfig:      kubeConfig,
+			Version:         "4.12.0",
 		},
 		&installer.KubeRolloutStatus{
 			Target:     "deployment",
