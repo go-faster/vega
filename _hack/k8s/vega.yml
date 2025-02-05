@@ -54,6 +54,17 @@ spec:
         - name: api
           image: vega
           imagePullPolicy: Never
+          livenessProbe:
+            httpGet:
+              port: 8080
+              path: /health
+          resources:
+            limits:
+              cpu: 500m
+              memory: 128Mi
+            requests:
+              cpu: 500m
+              memory: 32Mi
           ports:
             - containerPort: 8080
               name: http
