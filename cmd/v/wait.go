@@ -1,6 +1,9 @@
 package main
 
 import (
+	"fmt"
+	"io"
+	"net/http"
 	"time"
 
 	"github.com/cenkalti/backoff/v4"
@@ -9,6 +12,9 @@ import (
 )
 
 func newWaitCmd(a *Application) *cobra.Command {
+	var arg struct {
+		Duration time.Duration
+	}
 	cmd := &cobra.Command{
 		Use:   "wait",
 		Short: "Wait for the vega api to be ready",
@@ -16,7 +22,7 @@ func newWaitCmd(a *Application) *cobra.Command {
 			ctx := cmd.Context()
 			bo := backoff.NewExponentialBackOff()
 			bo.MaxInterval = time.Second
-			bo.MaxElapsedTime = time.Minute * 15
+			bo.MaxElapsedTime = arg.Duration
 			bo.InitialInterval = time.Millisecond * 100
 
 			if err := backoff.RetryNotify(func() error {
@@ -25,6 +31,15 @@ func newWaitCmd(a *Application) *cobra.Command {
 			}, bo, func(err error, duration time.Duration) {
 				cmd.Printf("Waiting for vega api to be ready: %v\n", err)
 			}); err != nil {
+				res, err := http.Get("http://vega.localhost/health")
+				if err != nil {
+					return errors.Wrap(err, "http.Get")
+				}
+				defer func() {
+					_ = res.Body.Close()
+				}()
+				_, _ = fmt.Fprintln(cmd.ErrOrStderr(), res.Status)
+				_, _ = io.Copy(cmd.OutOrStdout(), res.Body)
 				return errors.Wrap(err, "GetHealth")
 			}
 
@@ -32,5 +47,6 @@ func newWaitCmd(a *Application) *cobra.Command {
 			return nil
 		},
 	}
+	cmd.Flags().DurationVarP(&arg.Duration, "duration", "d", time.Second*15, "Maximum time to wait for the vega api to be ready")
 	return cmd
 }
