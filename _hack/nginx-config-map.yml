@@ -1,0 +1,3 @@
+data:
+  allow-snippet-annotations: "true"
+  worker-processes: "3"

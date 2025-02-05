@@ -20,6 +20,7 @@ type HelmUpgrade struct {
 	CreateNamespace bool
 	Version         string
 	KubeConfig      string
+	Repo            string
 }
 
 func (h HelmUpgrade) Step() StepInfo {
@@ -52,6 +53,9 @@ func (h HelmUpgrade) Run(ctx context.Context) error {
 	}
 	if h.Version != "" {
 		arg = append(arg, "--version", h.Version)
+	}
+	if h.Repo != "" {
+		arg = append(arg, "--repo", h.Repo)
 	}
 	cmd := exec.CommandContext(ctx, b, arg...)
 	cmd.Stdout = os.Stdout

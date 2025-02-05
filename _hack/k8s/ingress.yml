@@ -2,10 +2,12 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
   name: ingress-ui
   namespace: cilium
 spec:
-  ingressClassName: cilium
   rules:
     - host: hubble.localhost
       http:
@@ -21,10 +23,12 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
   name: ingress-chi
   namespace: clickhouse
 spec:
-  ingressClassName: cilium
   rules:
     - host: clickhouse.localhost
       http:
@@ -40,10 +44,12 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
   name: pyroscope
   namespace: monitoring
 spec:
-  ingressClassName: cilium
   rules:
     - host: pyroscope.localhost
       http:
@@ -59,10 +65,12 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
   name: api
   namespace: vega
 spec:
-  ingressClassName: cilium
   rules:
     - host: vega.localhost
       http:

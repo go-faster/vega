@@ -213,6 +213,23 @@ func run(ctx context.Context) error {
 			CreateNamespace: true,
 			KubeConfig:      kubeConfig,
 		},
+		&installer.HelmUpgrade{
+			Name:            "ingress-nginx",
+			Chart:           "ingress-nginx",
+			Install:         true,
+			Namespace:       "ingress-nginx",
+			Values:          file("nginx.yml"),
+			CreateNamespace: true,
+			Repo:            "https://kubernetes.github.io/ingress-nginx",
+			KubeConfig:      kubeConfig,
+		},
+		&installer.KubeRolloutStatus{
+			Target:     "deployment",
+			Name:       "ingress-nginx-controller",
+			Namespace:  "ingress-nginx",
+			Watch:      true,
+			KubeConfig: kubeConfig,
+		},
 		&installer.KubeApply{
 			File:       file("k8s"),
 			KubeConfig: kubeConfig,

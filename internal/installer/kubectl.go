@@ -134,3 +134,42 @@ func (k KubeDelete) Run(ctx context.Context) error {
 	}
 	return nil
 }
+
+type KubeRolloutStatus struct {
+	Bin        string
+	Target     string
+	Name       string
+	Namespace  string
+	Watch      bool
+	KubeConfig string
+}
+
+func (k KubeRolloutStatus) Step() StepInfo {
+	return StepInfo{Name: "kubectl rollout status " + k.Target + "/" + k.Name}
+}
+
+func (k KubeRolloutStatus) Run(ctx context.Context) error {
+	b := k.Bin
+	if b == "" {
+		b = kubectlBin
+	}
+	arg := []string{
+		"rollout", "status", k.Target + "/" + k.Name,
+	}
+	if k.Namespace != "" {
+		arg = append(arg, "-n", k.Namespace)
+	}
+	if k.Watch {
+		arg = append(arg, "-w")
+	}
+	if k.KubeConfig != "" {
+		arg = append(arg, "--kubeconfig", k.KubeConfig)
+	}
+	cmd := exec.CommandContext(ctx, b, arg...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	if err := cmd.Run(); err != nil {
+		return errors.Wrap(err, "kubectl rollout status")
+	}
+	return nil
+}
