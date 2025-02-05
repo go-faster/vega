@@ -10,6 +10,8 @@ read:
     size: 5Gi
 backend:
   replicas: 1
+chunksCache:
+  allocatedMemory: 1024
 loki:
   auth_enabled: false
   commonConfig:
