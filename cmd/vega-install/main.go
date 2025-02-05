@@ -65,9 +65,6 @@ func run(ctx context.Context) error {
 			KubeConfig: kubeConfig,
 			Nodes:      []string{"vega-worker"},
 		},
-		&installer.DockerPull{
-			ImagesFile: file("images.txt"),
-		},
 		&installer.KubeApply{
 			File:       file("monitoring.coreos.com_servicemonitors.yaml"),
 			KubeConfig: kubeConfig,
@@ -207,25 +204,7 @@ func run(ctx context.Context) error {
 					KubeConfig:      kubeConfig,
 					Version:         "5.29.0",
 				},
-				&installer.HelmUpgrade{
-					Name:            "ingress-nginx",
-					Chart:           "ingress-nginx",
-					Install:         true,
-					Namespace:       "ingress-nginx",
-					Values:          file("nginx.yml"),
-					CreateNamespace: true,
-					Repo:            "https://kubernetes.github.io/ingress-nginx",
-					KubeConfig:      kubeConfig,
-					Version:         "4.12.0",
-				},
 			},
-		},
-		&installer.KubeRolloutStatus{
-			Target:     "deployment",
-			Name:       "ingress-nginx-controller",
-			Namespace:  "ingress-nginx",
-			Watch:      true,
-			KubeConfig: kubeConfig,
 		},
 		&installer.KubeApply{
 			File:       file("k8s"),
