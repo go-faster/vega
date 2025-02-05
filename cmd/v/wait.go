@@ -38,9 +38,8 @@ func newWaitCmd(a *Application) *cobra.Command {
 				defer func() {
 					_ = res.Body.Close()
 				}()
-				_, _ = fmt.Fprintln(cmd.ErrOrStderr(), res.Status)
-				data, err := io.ReadAll(res.Body)
-				_, _ = fmt.Fprintf(cmd.ErrOrStderr(), "Body: %q\n", data)
+				data, _ := io.ReadAll(res.Body)
+				fmt.Printf("%s: %q\n", res.Status, data)
 				return errors.Wrap(err, "GetHealth")
 			}
 
