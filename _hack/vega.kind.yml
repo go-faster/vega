@@ -21,4 +21,6 @@ nodes:
         hostPort: 80
         listenAddress: 127.0.0.1
         protocol: TCP
+  - role: worker
+
 
