@@ -58,6 +58,10 @@ spec:
             httpGet:
               port: 8080
               path: /health
+          readinessProbe:
+            httpGet:
+              port: 8080
+              path: /health
           resources:
             limits:
               cpu: 500m
@@ -94,6 +98,6 @@ spec:
     app: vega-api
   ports:
     - protocol: TCP
-      port: 8080
+      port: 80
       targetPort: 8080
       name: "http"

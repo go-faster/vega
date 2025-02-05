@@ -131,14 +131,12 @@ data:
                 interval: 5000
                 exporter:
                   otlp:
-                    protocol: grpc/protobuf
                     endpoint: http://otel-collector.monitoring.svc.cluster.local:4317
         traces:
           processors:
             - batch:
                 exporter:
                   otlp:
-                    protocol: grpc/protobuf
                     endpoint: http://otel-collector.monitoring.svc.cluster.local:4317
       extensions: [ zpages, health_check ]
       pipelines:
