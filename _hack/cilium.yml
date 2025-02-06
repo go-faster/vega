@@ -1,6 +1,15 @@
 cluster:
   id: 1
   name: vega
+envoy:
+  enabled: true
+  debug:
+    admin:
+      enabled: true
+      port: 9901
+  prometheus:
+    serviceMonitor:
+      enabled: true
 encryption:
   nodeEncryption: false
 ingressController:
@@ -10,7 +19,11 @@ ingressController:
   enforceHttps: false
   hostNetwork:
     enabled: true
-    sharedListenerPort: 8080
+    sharedListenerPort: 30080
+    nodes:
+      # -- Specify the labels of the nodes where the Ingress listeners should be exposed
+      matchLabels:
+        ingress-ready: "true"
   service:
     externalTrafficPolicy: null
     type: ClusterIP
