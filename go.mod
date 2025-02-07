@@ -18,7 +18,7 @@ require (
 	github.com/minio/minio-go/v7 v7.0.84
 	github.com/nats-io/nats.go v1.39.0
 	github.com/ogen-go/ent2ogen v0.0.0-20230913015246-1d588150cabc
-	github.com/ogen-go/ogen v1.9.0
+	github.com/ogen-go/ogen v1.10.0
 	github.com/spf13/cobra v1.8.1
 	github.com/stretchr/testify v1.10.0
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.59.0
@@ -206,7 +206,7 @@ require (
 	golang.org/x/oauth2 v0.25.0 // indirect
 	golang.org/x/sys v0.29.0 // indirect
 	golang.org/x/term v0.28.0 // indirect
-	golang.org/x/text v0.21.0 // indirect
+	golang.org/x/text v0.22.0 // indirect
 	golang.org/x/time v0.9.0 // indirect
 	golang.org/x/tools v0.29.0 // indirect
 	golang.org/x/xerrors v0.0.0-20240903120638-7835f813f4da // indirect
