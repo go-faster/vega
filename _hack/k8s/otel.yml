@@ -120,25 +120,6 @@ data:
             - name: exception.type
             - name: exception.message
     service:
-      telemetry:
-        logs:
-          level: "info"
-          encoding: "json"
-          disable_stacktrace: true
-        metrics:
-          readers:
-            - periodic:
-                interval: 5000
-                exporter:
-                  otlp:
-                    endpoint: http://otel-collector.monitoring.svc.cluster.local:4317
-        traces:
-          processors:
-            - batch:
-                exporter:
-                  otlp:
-                    endpoint: http://otel-collector.monitoring.svc.cluster.local:4317
-      extensions: [ zpages, health_check ]
       pipelines:
         traces/spanmetrics:
           receivers: [ otlp ]
@@ -160,8 +141,26 @@ data:
           receivers: [ spanmetrics ]
           processors: [ memory_limiter, batch ]
           exporters: [ otlp/oteldb ]
+      extensions: [ zpages, health_check ]
       # https://github.com/open-telemetry/opentelemetry-collector/blob/main/docs/observability.md#how-we-expose-telemetry
-
+      telemetry:
+        metrics:
+          readers:
+            - periodic:
+                interval: 5000
+                exporter:
+                  otlp:
+                    protocol: grpc
+                    endpoint: https://${MY_POD_IP}:4317
+                    insecure: true
+        traces:
+          processors:
+            - batch:
+                exporter:
+                  otlp:
+                    protocol: grpc
+                    endpoint: https://${MY_POD_IP}:4317
+                    insecure: true
 
 ---
 apiVersion: v1
