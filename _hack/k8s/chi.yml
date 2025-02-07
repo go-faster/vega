@@ -4,6 +4,13 @@ metadata:
   name: "clickhouse"
   namespace: "clickhouse"
 spec:
+  templates:
+    podTemplates:
+      - name: clickhouse
+        spec:
+          containers:
+            - name: clickhouse
+              image: clickhouse/clickhouse-server:24.11
   configuration:
     users:
       admin/password: admin
@@ -23,6 +30,8 @@ spec:
       disable_internal_dns_cache: 1
     clusters:
       - name: "default"
+        templates:
+          podTemplate: clickhouse
         layout:
           shardsCount: 1
           replicasCount: 1
