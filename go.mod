@@ -15,7 +15,7 @@ require (
 	github.com/go-faster/jx v1.1.0
 	github.com/go-faster/sdk v0.26.1
 	github.com/go-faster/tetragon v1.3.2
-	github.com/minio/minio-go/v7 v7.0.84
+	github.com/minio/minio-go/v7 v7.0.85
 	github.com/nats-io/nats.go v1.39.0
 	github.com/ogen-go/ent2ogen v0.0.0-20230913015246-1d588150cabc
 	github.com/ogen-go/ogen v1.10.0
