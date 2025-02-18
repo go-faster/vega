@@ -13,7 +13,7 @@ require (
 	github.com/dustin/go-humanize v1.0.1
 	github.com/go-faster/errors v0.7.1
 	github.com/go-faster/jx v1.1.0
-	github.com/go-faster/sdk v0.26.1
+	github.com/go-faster/sdk v0.27.0
 	github.com/go-faster/tetragon v1.3.2
 	github.com/minio/minio-go/v7 v7.0.86
 	github.com/nats-io/nats.go v1.39.0
