@@ -16,7 +16,7 @@ require (
 	github.com/go-faster/sdk v0.27.0
 	github.com/go-faster/tetragon v1.3.2
 	github.com/minio/minio-go/v7 v7.0.86
-	github.com/nats-io/nats.go v1.39.0
+	github.com/nats-io/nats.go v1.39.1
 	github.com/ogen-go/ent2ogen v0.0.0-20230913015246-1d588150cabc
 	github.com/ogen-go/ogen v1.10.0
 	github.com/spf13/cobra v1.9.1
