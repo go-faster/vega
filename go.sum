@@ -20,8 +20,8 @@ cloud.google.com/go/longrunning v0.6.4 h1:3tyw9rO3E2XVXzSApn1gyEEnH2K9SynNQjMlBi
 cloud.google.com/go/longrunning v0.6.4/go.mod h1:ttZpLCe6e7EXvn9OxpBRx7kZEB0efv8yBO6YnVMfhJs=
 cloud.google.com/go/secretmanager v1.14.4 h1:SMWQMsUcACsdIuVhIBAw+QfKY4Xseiaa8qDnunjmhcM=
 cloud.google.com/go/secretmanager v1.14.4/go.mod h1:pjwFw8+A6B4AcWrVXruLfz1QykkpMr8T/VT+zXB91iw=
-entgo.io/ent v0.14.2 h1:ywld/j2Rx4EmnIKs8eZ29cbFA1zpB+DA9TLL5l3rlq0=
-entgo.io/ent v0.14.2/go.mod h1:aDPE/OziPEu8+OWbzy4UlvWmD2/kbRuWfK2A40hcxJM=
+entgo.io/ent v0.14.3 h1:wokAV/kIlH9TeklJWGGS7AYJdVckr0DloWjIcO9iIIQ=
+entgo.io/ent v0.14.3/go.mod h1:aDPE/OziPEu8+OWbzy4UlvWmD2/kbRuWfK2A40hcxJM=
 filippo.io/edwards25519 v1.1.0 h1:FNf4tywRC1HmFuKW5xopWpigGjJKiJSV0Cqo0cJWDaA=
 filippo.io/edwards25519 v1.1.0/go.mod h1:BxyFTGdWcka3PhytdK4V28tE5sGfRvvvRV7EaN4VDT4=
 github.com/1lann/promptui v0.8.1-0.20220708222609-81fad96dd5e1 h1:LejjvYg4tCW5HO7q/1nzPrprh47oUD9OUySQ29pDp5c=
