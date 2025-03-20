@@ -6,7 +6,7 @@ toolchain go1.24.1
 
 require (
 	ariga.io/atlas/cmd/atlas v0.13.1
-	entgo.io/ent v0.14.3
+	entgo.io/ent v0.14.4
 	github.com/ClickHouse/ch-go v0.65.1
 	github.com/cenkalti/backoff/v4 v4.3.0
 	github.com/cilium/cilium v1.17.2
