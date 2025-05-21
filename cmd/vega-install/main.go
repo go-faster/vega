@@ -183,16 +183,6 @@ func run(ctx context.Context) error {
 					Version:         "1.18.1",
 				},
 				&installer.HelmUpgrade{
-					Name:            "oncall",
-					Chart:           "grafana/oncall",
-					Install:         true,
-					Namespace:       "monitoring",
-					Values:          file("oncall.yml"),
-					CreateNamespace: true,
-					KubeConfig:      kubeConfig,
-					Version:         "1.14.3",
-				},
-				&installer.HelmUpgrade{
 					Name:            "pyroscope",
 					Chart:           "grafana/pyroscope",
 					Install:         true,
