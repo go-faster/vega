@@ -18,7 +18,7 @@ require (
 	github.com/minio/minio-go/v7 v7.0.92
 	github.com/nats-io/nats.go v1.43.0
 	github.com/ogen-go/ent2ogen v0.0.0-20230913015246-1d588150cabc
-	github.com/ogen-go/ogen v1.13.0
+	github.com/ogen-go/ogen v1.14.0
 	github.com/spf13/cobra v1.9.1
 	github.com/stretchr/testify v1.10.0
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.61.0
