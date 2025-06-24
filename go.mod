@@ -7,7 +7,7 @@ toolchain go1.24.1
 require (
 	ariga.io/atlas/cmd/atlas v0.13.1
 	entgo.io/ent v0.14.4
-	github.com/ClickHouse/ch-go v0.66.0
+	github.com/ClickHouse/ch-go v0.66.1
 	github.com/cenkalti/backoff/v4 v4.3.0
 	github.com/cilium/cilium v1.17.5
 	github.com/dustin/go-humanize v1.0.1
