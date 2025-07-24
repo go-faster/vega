@@ -30,10 +30,10 @@ require (
 	golang.org/x/sync v0.15.0
 	google.golang.org/grpc v1.74.2
 	google.golang.org/protobuf v1.36.6
-	k8s.io/api v0.33.2
-	k8s.io/apimachinery v0.33.2
-	k8s.io/client-go v0.33.2
-	sigs.k8s.io/yaml v1.4.0
+	k8s.io/api v0.33.3
+	k8s.io/apimachinery v0.33.3
+	k8s.io/client-go v0.33.3
+	sigs.k8s.io/yaml v1.6.0
 )
 
 require (
@@ -201,6 +201,7 @@ require (
 	go.uber.org/atomic v1.11.0 // indirect
 	go.uber.org/automaxprocs v1.6.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
+	go.yaml.in/yaml/v2 v2.4.2 // indirect
 	gocloud.dev v0.40.0 // indirect
 	golang.org/x/crypto v0.38.0 // indirect
 	golang.org/x/exp v0.0.0-20250128182459-e0ece0dbea4c // indirect
