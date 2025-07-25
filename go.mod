@@ -7,7 +7,7 @@ toolchain go1.24.1
 require (
 	ariga.io/atlas/cmd/atlas v0.13.1
 	entgo.io/ent v0.14.4
-	github.com/ClickHouse/ch-go v0.66.1
+	github.com/ClickHouse/ch-go v0.67.0
 	github.com/cenkalti/backoff/v4 v4.3.0
 	github.com/cilium/cilium v1.17.6
 	github.com/dustin/go-humanize v1.0.1
@@ -204,16 +204,16 @@ require (
 	go.uber.org/multierr v1.11.0 // indirect
 	go.yaml.in/yaml/v2 v2.4.2 // indirect
 	gocloud.dev v0.40.0 // indirect
-	golang.org/x/crypto v0.39.0 // indirect
+	golang.org/x/crypto v0.40.0 // indirect
 	golang.org/x/exp v0.0.0-20250128182459-e0ece0dbea4c // indirect
 	golang.org/x/mod v0.25.0 // indirect
 	golang.org/x/net v0.41.0 // indirect
 	golang.org/x/oauth2 v0.30.0 // indirect
-	golang.org/x/sys v0.33.0 // indirect
-	golang.org/x/term v0.32.0 // indirect
-	golang.org/x/text v0.26.0 // indirect
+	golang.org/x/sys v0.34.0 // indirect
+	golang.org/x/term v0.33.0 // indirect
+	golang.org/x/text v0.27.0 // indirect
 	golang.org/x/time v0.9.0 // indirect
-	golang.org/x/tools v0.33.0 // indirect
+	golang.org/x/tools v0.34.0 // indirect
 	golang.org/x/xerrors v0.0.0-20240903120638-7835f813f4da // indirect
 	google.golang.org/api v0.219.0 // indirect
 	google.golang.org/genproto v0.0.0-20250127172529-29210b9bc287 // indirect
