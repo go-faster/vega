@@ -6,7 +6,7 @@ toolchain go1.24.1
 
 require (
 	ariga.io/atlas/cmd/atlas v0.13.1
-	entgo.io/ent v0.14.4
+	entgo.io/ent v0.14.5
 	github.com/ClickHouse/ch-go v0.67.0
 	github.com/cenkalti/backoff/v4 v4.3.0
 	github.com/cilium/cilium v1.17.6
@@ -37,7 +37,7 @@ require (
 )
 
 require (
-	ariga.io/atlas v0.31.1-0.20250212144724-069be8033e83 // indirect
+	ariga.io/atlas v0.32.1-0.20250325101103-175b25e1c1b9 // indirect
 	cloud.google.com/go/auth v0.14.1 // indirect
 	cloud.google.com/go/auth/oauth2adapt v0.2.7 // indirect
 	cloud.google.com/go/compute/metadata v0.7.0 // indirect
