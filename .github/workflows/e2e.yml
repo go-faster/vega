@@ -38,7 +38,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Set up helm
-        uses: azure/setup-helm@v4.3.0
+        uses: azure/setup-helm@v4.3.1
 
       - name: Install kind
         run: |
