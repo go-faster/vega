@@ -9,7 +9,6 @@ docker.io/grafana/loki:3.3.2
 docker.io/grafana/loki-canary:3.3.2
 docker.io/kindest/local-path-provisioner:v20241212-8ac705d0
 docker.io/nginxinc/nginx-unprivileged:1.27-alpine
-ghcr.io/go-faster/oteldb:v0.19.1
 ghcr.io/go-faster/simon:0.9.1
 ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:latest
 grafana/pyroscope:1.12.0

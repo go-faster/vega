@@ -115,16 +115,6 @@ func run(ctx context.Context) error {
 					Version:         "0.24.4",
 				},
 				&installer.HelmUpgrade{
-					Name:            "otel",
-					Chart:           "faster/oteldb",
-					Install:         true,
-					Version:         "0.19.1",
-					Values:          file("oteldb.yml"),
-					Namespace:       "faster",
-					CreateNamespace: true,
-					KubeConfig:      kubeConfig,
-				},
-				&installer.HelmUpgrade{
 					Name:            "grafana",
 					Chart:           "grafana/grafana",
 					Install:         true,
