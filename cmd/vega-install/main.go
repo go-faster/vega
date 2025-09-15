@@ -203,6 +203,15 @@ func run(ctx context.Context) error {
 					KubeConfig:      kubeConfig,
 					Version:         "4.12.0",
 				},
+				&installer.HelmUpgrade{
+					Name:            "trivy-operator",
+					Chart:           "aqua/trivy-operator",
+					Install:         true,
+					Namespace:       "trivy-system",
+					CreateNamespace: true,
+					KubeConfig:      kubeConfig,
+					Version:         "0.30.0",
+				},
 			},
 		},
 		&installer.KubeRolloutStatus{

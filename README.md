@@ -35,6 +35,7 @@ helm repo add prometheus-community https://prometheus-community.github.io/helm-c
 helm repo add vm https://victoriametrics.github.io/helm-charts/
 helm repo add nats https://nats-io.github.io/k8s/helm/charts/
 helm repo add minio-operator https://operator.min.io
+helm repo add aqua https://aquasecurity.github.io/helm-charts/
 
 helm repo update
 ```
