@@ -81,11 +81,8 @@ data:
         endpoint: tempo.monitoring.svc.cluster.local:4317
         tls:
           insecure: true
-      loki:
-        endpoint: http://loki-gateway.monitoring.svc.cluster.local/loki/api/v1/push
-        default_labels_enabled:
-          exporter: false
-          job: true
+      otlphttp/loki:
+        endpoint: http://loki-gateway.monitoring.svc.cluster.local/otlp
       otlphttp/victoriametrics:
         compression: gzip
         encoding: proto
@@ -128,7 +125,7 @@ data:
         logs:
           receivers: [ otlp ]
           processors: [ memory_limiter, k8sattributes, resource, batch ]
-          exporters: [ loki, otlphttp/victoriametrics ]
+          exporters: [ otlphttp/loki, otlphttp/victoriametrics ]
         metrics:
           receivers: [ otlp, k8s_cluster, spanmetrics ]
           processors: [ memory_limiter, k8sattributes, resource, batch ]
