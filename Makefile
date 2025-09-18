@@ -11,3 +11,8 @@ test_fast:
 
 tidy:
 	go mod tidy
+up:
+	go run ./cmd/vega-install
+helm:
+	bash _hack/helm-install.sh
+
