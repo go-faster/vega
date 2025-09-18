@@ -45,3 +45,4 @@ victoriametrics/vmagent:v1.125.0
 victoriametrics/vminsert:v1.125.0-cluster
 victoriametrics/vmselect:v1.125.0-cluster
 victoriametrics/vmstorage:v1.125.0-cluster
+gitlab/gitlab-ce:18.4.0-ce.0

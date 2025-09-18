@@ -1,26 +1,30 @@
 module github.com/go-faster/vega
 
-go 1.24.0
+go 1.25
 
-toolchain go1.24.1
+toolchain go1.25.1
 
 require (
 	ariga.io/atlas/cmd/atlas v0.13.1
 	entgo.io/ent v0.14.5
 	github.com/ClickHouse/ch-go v0.68.0
+	github.com/PuerkitoBio/goquery v1.10.3
 	github.com/cenkalti/backoff/v4 v4.3.0
 	github.com/cilium/cilium v1.18.2
 	github.com/dustin/go-humanize v1.0.1
+	github.com/fatih/color v1.18.0
 	github.com/go-faster/errors v0.7.1
 	github.com/go-faster/jx v1.1.0
 	github.com/go-faster/sdk v0.28.0
 	github.com/go-faster/tetragon v1.3.2
+	github.com/goccy/go-yaml v1.18.0
 	github.com/minio/minio-go/v7 v7.0.95
 	github.com/nats-io/nats.go v1.45.0
 	github.com/ogen-go/ent2ogen v0.0.0-20230913015246-1d588150cabc
 	github.com/ogen-go/ogen v1.14.0
 	github.com/spf13/cobra v1.10.1
 	github.com/stretchr/testify v1.11.1
+	github.com/xanzy/go-gitlab v0.115.0
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.63.0
 	go.opentelemetry.io/otel v1.38.0
 	go.opentelemetry.io/otel/metric v1.38.0
@@ -47,6 +51,7 @@ require (
 	github.com/1lann/promptui v0.8.1-0.20220708222609-81fad96dd5e1 // indirect
 	github.com/KimMachineGun/automemlimit v0.7.4 // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect
+	github.com/andybalholm/cascadia v1.3.3 // indirect
 	github.com/antlr/antlr4/runtime/Go/antlr v1.4.10 // indirect
 	github.com/antlr/antlr4/runtime/Go/antlr/v4 v4.0.0-20230512164433-5d1fd1a340c9 // indirect
 	github.com/antlr4-go/antlr/v4 v4.13.1 // indirect
@@ -82,7 +87,6 @@ require (
 	github.com/dlclark/regexp2 v1.11.5 // indirect
 	github.com/dmarkham/enumer v1.6.1 // indirect
 	github.com/emicklei/go-restful/v3 v3.12.2 // indirect
-	github.com/fatih/color v1.18.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/fxamacker/cbor/v2 v2.9.0 // indirect
@@ -106,6 +110,7 @@ require (
 	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/google/gnostic-models v0.7.0 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
+	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/s2a-go v0.1.9 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/google/wire v0.6.0 // indirect
@@ -116,6 +121,8 @@ require (
 	github.com/grafana/pyroscope-go/godeltaprof v0.1.8 // indirect
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.27.1 // indirect
+	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
+	github.com/hashicorp/go-retryablehttp v0.7.7 // indirect
 	github.com/hashicorp/go-version v1.7.0 // indirect
 	github.com/hashicorp/hcl/v2 v2.23.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect

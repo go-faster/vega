@@ -349,30 +349,30 @@ type Table struct {
 
 	direction proto.ColEnum
 
-	pfmEnv     proto.ColEnum
-	pfmNs      proto.ColLowCardinality[string]
-	pfmCommit  proto.ColLowCardinality[string]
-	pfmUnit    proto.ColLowCardinality[string]
-	pfmApp     proto.ColLowCardinality[string]
-	pfmProject proto.ColLowCardinality[string]
-	pfmDC      proto.ColLowCardinality[string]
-	pfmRegion  proto.ColLowCardinality[string]
-	pfmCluster proto.ColLowCardinality[string]
-	pfmHost    proto.ColLowCardinality[string]
+	vegaEnv     proto.ColEnum
+	vegaNs      proto.ColLowCardinality[string]
+	vegaCommit  proto.ColLowCardinality[string]
+	vegaUnit    proto.ColLowCardinality[string]
+	vegaApp     proto.ColLowCardinality[string]
+	vegaProject proto.ColLowCardinality[string]
+	vegaDC      proto.ColLowCardinality[string]
+	vegaRegion  proto.ColLowCardinality[string]
+	vegaCluster proto.ColLowCardinality[string]
+	vegaHost    proto.ColLowCardinality[string]
 
 	k8sPod proto.ColLowCardinality[string]
 	k8sNS  proto.ColLowCardinality[string]
 
-	pfmPeerEnv     proto.ColEnum
-	pfmPeerNs      proto.ColLowCardinality[string]
-	pfmPeerCommit  proto.ColLowCardinality[string]
-	pfmPeerUnit    proto.ColLowCardinality[string]
-	pfmPeerApp     proto.ColLowCardinality[string]
-	pfmPeerProject proto.ColLowCardinality[string]
-	pfmPeerDC      proto.ColLowCardinality[string]
-	pfmPeerRegion  proto.ColLowCardinality[string]
-	pfmPeerCluster proto.ColLowCardinality[string]
-	pfmPeerHost    proto.ColLowCardinality[string]
+	vegaPeerEnv     proto.ColEnum
+	vegaPeerNs      proto.ColLowCardinality[string]
+	vegaPeerCommit  proto.ColLowCardinality[string]
+	vegaPeerUnit    proto.ColLowCardinality[string]
+	vegaPeerApp     proto.ColLowCardinality[string]
+	vegaPeerProject proto.ColLowCardinality[string]
+	vegaPeerDC      proto.ColLowCardinality[string]
+	vegaPeerRegion  proto.ColLowCardinality[string]
+	vegaPeerCluster proto.ColLowCardinality[string]
+	vegaPeerHost    proto.ColLowCardinality[string]
 
 	k8sPeerPod proto.ColLowCardinality[string]
 	k8sPeerNS  proto.ColLowCardinality[string]
@@ -464,29 +464,29 @@ func (t *Table) Reset() {
 
 		&t.direction,
 
-		&t.pfmEnv,
-		&t.pfmNs,
-		&t.pfmCommit,
-		&t.pfmUnit,
-		&t.pfmApp,
-		&t.pfmProject,
-		&t.pfmDC,
-		&t.pfmRegion,
-		&t.pfmCluster,
-		&t.pfmHost,
+		&t.vegaEnv,
+		&t.vegaNs,
+		&t.vegaCommit,
+		&t.vegaUnit,
+		&t.vegaApp,
+		&t.vegaProject,
+		&t.vegaDC,
+		&t.vegaRegion,
+		&t.vegaCluster,
+		&t.vegaHost,
 		&t.k8sPod,
 		&t.k8sNS,
 
-		&t.pfmPeerEnv,
-		&t.pfmPeerNs,
-		&t.pfmPeerCommit,
-		&t.pfmPeerUnit,
-		&t.pfmPeerApp,
-		&t.pfmPeerProject,
-		&t.pfmPeerDC,
-		&t.pfmPeerRegion,
-		&t.pfmPeerCluster,
-		&t.pfmPeerHost,
+		&t.vegaPeerEnv,
+		&t.vegaPeerNs,
+		&t.vegaPeerCommit,
+		&t.vegaPeerUnit,
+		&t.vegaPeerApp,
+		&t.vegaPeerProject,
+		&t.vegaPeerDC,
+		&t.vegaPeerRegion,
+		&t.vegaPeerCluster,
+		&t.vegaPeerHost,
 		&t.k8sPeerPod,
 		&t.k8sPeerNS,
 		&t.timestamp,
@@ -1221,28 +1221,28 @@ func NewTable(name string) *Table {
 		ethernetSrc: newStrLowCardinality(),
 		ethernetDst: newStrLowCardinality(),
 
-		pfmNs:      newStrLowCardinality(),
-		pfmCommit:  newStrLowCardinality(),
-		pfmUnit:    newStrLowCardinality(),
-		pfmApp:     newStrLowCardinality(),
-		pfmProject: newStrLowCardinality(),
-		pfmDC:      newStrLowCardinality(),
-		pfmRegion:  newStrLowCardinality(),
-		pfmCluster: newStrLowCardinality(),
-		pfmHost:    newStrLowCardinality(),
+		vegaNs:      newStrLowCardinality(),
+		vegaCommit:  newStrLowCardinality(),
+		vegaUnit:    newStrLowCardinality(),
+		vegaApp:     newStrLowCardinality(),
+		vegaProject: newStrLowCardinality(),
+		vegaDC:      newStrLowCardinality(),
+		vegaRegion:  newStrLowCardinality(),
+		vegaCluster: newStrLowCardinality(),
+		vegaHost:    newStrLowCardinality(),
 
 		k8sPod: newStrLowCardinality(),
 		k8sNS:  newStrLowCardinality(),
 
-		pfmPeerNs:      newStrLowCardinality(),
-		pfmPeerCommit:  newStrLowCardinality(),
-		pfmPeerUnit:    newStrLowCardinality(),
-		pfmPeerApp:     newStrLowCardinality(),
-		pfmPeerProject: newStrLowCardinality(),
-		pfmPeerDC:      newStrLowCardinality(),
-		pfmPeerRegion:  newStrLowCardinality(),
-		pfmPeerCluster: newStrLowCardinality(),
-		pfmPeerHost:    newStrLowCardinality(),
+		vegaPeerNs:      newStrLowCardinality(),
+		vegaPeerCommit:  newStrLowCardinality(),
+		vegaPeerUnit:    newStrLowCardinality(),
+		vegaPeerApp:     newStrLowCardinality(),
+		vegaPeerProject: newStrLowCardinality(),
+		vegaPeerDC:      newStrLowCardinality(),
+		vegaPeerRegion:  newStrLowCardinality(),
+		vegaPeerCluster: newStrLowCardinality(),
+		vegaPeerHost:    newStrLowCardinality(),
 
 		k8sPeerPod: newStrLowCardinality(),
 		k8sPeerNS:  newStrLowCardinality(),

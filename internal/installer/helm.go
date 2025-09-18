@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"time"
 
 	"github.com/go-faster/errors"
 )
@@ -21,6 +22,7 @@ type HelmUpgrade struct {
 	Version         string
 	KubeConfig      string
 	Repo            string
+	Timeout         time.Duration
 }
 
 func (h HelmUpgrade) Step() StepInfo {
@@ -56,6 +58,9 @@ func (h HelmUpgrade) Run(ctx context.Context) error {
 	}
 	if h.Repo != "" {
 		arg = append(arg, "--repo", h.Repo)
+	}
+	if h.Timeout != 0 {
+		arg = append(arg, "--timeout", h.Timeout.String())
 	}
 	cmd := exec.CommandContext(ctx, b, arg...)
 	cmd.Stdout = os.Stdout

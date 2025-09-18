@@ -75,7 +75,7 @@ components:
       title: Structured error
       description: Error occurred while processing request
       externalDocs:
-        url: "https://pfm.pages.gitlab.corp.mail.ru/docs/dev/spec/v2/errors"
+        url: "https://vega.pages.gitlab.corp.mail.ru/docs/dev/spec/v2/errors"
         description: "Structured error specification"
       type: object
       required:
