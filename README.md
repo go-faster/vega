@@ -23,7 +23,12 @@ Requirements:
 - [helm](https://helm.sh/docs/intro/install/)
 - [cilium cli](https://docs.cilium.io/en/stable/gettingstarted/k8s-install-default/#install-the-cilium-cli)
 - docker
-- go 1.23
+- go 1.24
+
+Add to hosts:
+```
+127.0.0.1 gitlab.vega.svc.cluster.local
+```
 
 ```bash
 make helm
