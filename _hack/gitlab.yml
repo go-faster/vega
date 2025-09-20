@@ -1,0 +1,24 @@
+rbac:
+  create: true
+concurrent: 5
+
+podLabels:
+  "app.kubernetes.io/part-of": "vega"
+  "k8s-app": "gitlab-runner"
+  "vega.app": "gitlab-runner"
+  "vega.project": "vega"
+  "vega.unit": "vega"
+  "gitlab.role": "manager"
+
+runners:
+  config: |
+    [[runners]]
+      [runners.kubernetes]
+        [runners.kubernetes.pod_labels]
+          "app.kubernetes.io/part-of" = "vega"
+          "k8s-app" = "gitlab-runner"
+          "vega.app" = "gitlab-runner"
+          "vega.project" = "vega"
+          "vega.unit" = "vega"
+          "gitlab.role" = "runner"
+          "gitlab.job.id" = "$CI_JOB_ID"

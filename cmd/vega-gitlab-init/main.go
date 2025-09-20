@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"flag"
@@ -80,7 +81,7 @@ func (c *Client) ProjectRunnerRegistrationToken(ctx context.Context, projectPath
 		return "", errors.Wrap(err, "new document")
 	}
 
-	token := doc.Find("#registration_token").First().Text()
+	token := doc.Find("#js-project-runner-registration-dropdown").First().AttrOr("data-registration-token", "")
 	if token == "" {
 		return "", errors.New("authenticity_token not found")
 	}
@@ -120,9 +121,10 @@ type Auth struct {
 }
 
 type AccessToken struct {
-	Name      string
-	Scopes    []string
-	ExpiresAt time.Time
+	Name        string   `json:"name"`
+	Description string   `json:"description"`
+	ExpiresAt   string   `json:"expires_at"`
+	Scopes      []string `json:"scopes"`
 }
 
 func (c *Client) csrfToken(ctx context.Context, path string) (string, error) {
@@ -151,26 +153,23 @@ func (c *Client) csrfToken(ctx context.Context, path string) (string, error) {
 }
 
 func (c *Client) CreateAccessToken(ctx context.Context, opt AccessToken) (string, error) {
-	const ref = "/-/profile/personal_access_tokens"
+	const ref = "/-/user_settings/personal_access_tokens"
 
 	csrfToken, err := c.csrfToken(ctx, ref)
 	if err != nil {
 		return "", errors.Wrap(err, "get csrf token")
 	}
 
-	f := url.Values{}
-	f.Set("commit", "Create personal access token")
-	f.Set("personal_access_token[name]", opt.Name)
-	f.Set("personal_access_token[expires_at]", opt.ExpiresAt.Format("2006-01-02"))
-	for _, s := range opt.Scopes {
-		f.Add("personal_access_token[scopes][]", s)
+	accessToken, err := json.Marshal(opt)
+	if err != nil {
+		return "", errors.Wrap(err, "marshal")
 	}
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, c.base+ref, strings.NewReader(f.Encode()))
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, c.base+ref, bytes.NewReader(accessToken))
 	if err != nil {
 		return "", errors.Wrap(err, "new request")
 	}
-	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("X-CSRF-Token", csrfToken)
 	res, err := cli.Response(ctx, c.http, req)
 	if err != nil {
@@ -184,7 +183,7 @@ func (c *Client) CreateAccessToken(ctx context.Context, opt AccessToken) (string
 	}
 
 	var data struct {
-		NewToken string `json:"new_token"`
+		NewToken string `json:"token"`
 	}
 	if err := json.Unmarshal(body, &data); err != nil {
 		fmt.Println("body:", string(body))
@@ -236,13 +235,13 @@ func (c *Client) AddApplication(ctx context.Context, app Application) (*Applicat
 	}
 	f := url.Values{}
 	f.Set("authenticity_token", token)
-	f.Set("doorkeeper_application[name]", app.Name)
-	f.Set("doorkeeper_application[redirect_uri]", app.RedirectURI)
-	f.Set("doorkeeper_application[trusted]", "0")
-	f.Set("doorkeeper_application[confidential]", "0")
-	f.Set("doorkeeper_application[confidential]", "1")
+	f.Set("authn_oauth_application[name]", app.Name)
+	f.Set("authn_oauth_application[redirect_uri]", app.RedirectURI)
+	f.Set("authn_oauth_application[trusted]", "0")
+	f.Set("authn_oauth_application[confidential]", "0")
+	f.Set("authn_oauth_application[confidential]", "1")
 	for _, s := range app.Scopes {
-		f.Add("doorkeeper_application[scopes][]", s)
+		f.Add("authn_oauth_application[scopes][]", s)
 	}
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, c.base+"/admin/applications", strings.NewReader(f.Encode()))
 	if err != nil {
@@ -267,8 +266,8 @@ func (c *Client) AddApplication(ctx context.Context, app Application) (*Applicat
 	}
 	// Parse credentials.
 	creds := &ApplicationCredentials{
-		ID:     doc.Find("#application_id").First().AttrOr("value", ""),
-		Secret: doc.Find(`button[data-title="Copy secret"]`).First().AttrOr("data-clipboard-text", ""),
+		ID:     doc.Find(`span[data-testid="application-id-field"]`).First().Text(),
+		Secret: doc.Find(`#js-oauth-application-secret`).First().AttrOr("data-initial-secret", ""),
 	}
 	if creds.ID == "" {
 		return nil, errors.New("id not found")
@@ -341,7 +340,7 @@ func run(ctx context.Context) error {
 			"write_repository",
 			"sudo",
 		},
-		ExpiresAt: time.Now().Add(time.Hour * 24 * 7),
+		ExpiresAt: time.Now().AddDate(0, 0, 7).Format("2006-01-02"),
 	})
 	if err != nil {
 		return errors.Wrap(err, "create access token")
