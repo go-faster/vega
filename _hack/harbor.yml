@@ -1,0 +1,7 @@
+externalURL: harbor.localhost
+expose:
+  tls:
+    enabled: false
+  ingress:
+    hosts:
+      core: core.harbor.localhost
