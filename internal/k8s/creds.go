@@ -10,8 +10,8 @@ const (
 	AuthClientID     = Name
 	AuthClientSecret = Name
 
-	SecretAPIOAuth     = "vega.api.oauth"
-	SecretGrafanaOAuth = "vega.grafana.oauth"
+	SecretAPIOAuth     = "vega.api.oauth"     //#nosec G101
+	SecretGrafanaOAuth = "vega.grafana.oauth" //#nosec G101
 
 	// Minio config.
 
@@ -26,7 +26,7 @@ const (
 	DBUser     = Name
 	DBName     = Name
 	DB         = "host=psql.vega.svc.cluster.local port=5432 user=vega dbname=vega password=vega sslmode=disable"
-	DBURL      = "postgres://vega:vega@psql.vega.svc.cluster.local:5432/vega?sslmode=disable"
+	DBURL      = "postgres://vega:vega@psql.vega.svc.cluster.local:5432/vega?sslmode=disable" //#nosec G101
 
 	// K8S config.
 
@@ -77,7 +77,7 @@ const (
 )
 
 const (
-	GitLabDebugRootPassword = "9a3bd550-f534-4356-8dcd-393df51c7cd1"
+	GitLabDebugRootPassword = "9a3bd550-f534-4356-8dcd-393df51c7cd1" //#nosec G101
 	GitLabDebugRootLogin    = "root"
 )
 

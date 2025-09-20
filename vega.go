@@ -49,8 +49,8 @@ const (
 // Secret types.
 const (
 	SecretTypeGitLabAccessToken             = "gitlab-access-token"
-	SecretTypeGitLabRunnerRegistrationToken = "gitlab-runner-registration-token"
-	SecretTypeGitLabApplicationCredentials  = "gitlab-application-credentials"
+	SecretTypeGitLabRunnerRegistrationToken = "gitlab-runner-registration-token" //#nosec G101
+	SecretTypeGitLabApplicationCredentials  = "gitlab-application-credentials"   //#nosec G101
 
 	SecretTypeRemoteToken = "remote-token" // opaque token for remote cluster, created on host cluster
 	SecretTypeHostToken   = "host-token"   // service account token, created on remote cluster

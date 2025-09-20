@@ -18,7 +18,7 @@ import (
 	"github.com/cenkalti/backoff/v4"
 	"github.com/fatih/color"
 	"github.com/go-faster/errors"
-	"github.com/xanzy/go-gitlab"
+	gitlab "gitlab.com/gitlab-org/api/client-go"
 	meta "k8s.io/apimachinery/pkg/apis/meta/v1"
 	apply "k8s.io/client-go/applyconfigurations/core/v1"
 	applyMeta "k8s.io/client-go/applyconfigurations/meta/v1"
@@ -355,7 +355,7 @@ func run(ctx context.Context) error {
 	// Save token as kubernetes secret.
 	var (
 		name         = "vega.gitlab"
-		internalURL  = fmt.Sprintf("http://gitlab.vega.svc.cluster.local")
+		internalURL  = "http://gitlab.vega.svc.cluster.local"
 		appName      = "gitlab"
 		annotations  = map[string]string{}
 		applyOptions = meta.ApplyOptions{
