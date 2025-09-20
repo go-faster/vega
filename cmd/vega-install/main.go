@@ -212,6 +212,14 @@ func run(ctx context.Context) error {
 					KubeConfig:      kubeConfig,
 					Version:         "0.30.0",
 				},
+				&installer.HelmUpgrade{
+					Name:            "harbor",
+					Chart:           "harbor/harbor",
+					Install:         true,
+					Namespace:       "harbor",
+					CreateNamespace: true,
+					KubeConfig:      kubeConfig,
+				},
 			},
 		},
 		&installer.KubeRolloutStatus{
