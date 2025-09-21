@@ -1,7 +1,13 @@
-externalURL: harbor.localhost
+externalURL: http://harbor.localhost:80
+
 expose:
+  type: clusterIP
   tls:
     enabled: false
-  ingress:
-    hosts:
-      core: core.harbor.localhost
+  clusterIP:
+    name: harbor
+    ports:
+      httpPort: 8080
+
+registry:
+  relativeurls: true
