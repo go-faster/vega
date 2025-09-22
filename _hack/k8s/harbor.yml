@@ -1,0 +1,20 @@
+# HACK: To make Harbor accessible while pulling images, we are
+# using a NodePort service.
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: harbor-nodeport
+  namespace: harbor
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 8080
+      nodePort: 30808
+      protocol: TCP
+      name: http
+  selector:
+    app: harbor
+    component: nginx
+    release: harbor
