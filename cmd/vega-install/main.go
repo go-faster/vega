@@ -81,7 +81,7 @@ func run(ctx context.Context) error {
 			Name:            "cilium",
 			Chart:           "cilium/cilium",
 			Install:         true,
-			Version:         "1.17.0",
+			Version:         "1.18.2",
 			Values:          file("cilium.yml"),
 			Namespace:       "cilium",
 			CreateNamespace: true,
