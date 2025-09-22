@@ -9,6 +9,16 @@ docker.io/nginxinc/nginx-unprivileged:1.29-alpine
 ghcr.io/aquasecurity/node-collector:0.3.1
 ghcr.io/go-faster/simon:0.9.1
 ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:latest
+gitlab/gitlab-ce:18.4.0-ce.0
+goharbor/harbor-core:v2.14.0
+goharbor/harbor-db:v2.14.0
+goharbor/harbor-jobservice:v2.14.0
+goharbor/harbor-portal:v2.14.0
+goharbor/harbor-registryctl:v2.14.0
+goharbor/nginx-photon:v2.14.0
+goharbor/redis-photon:v2.14.0
+goharbor/registry-photon:v2.14.0
+goharbor/trivy-adapter-photon:v2.14.0
 grafana/pyroscope:1.12.0
 grafana/tempo:2.8.2
 kiwigrid/k8s-sidecar:1.30.7
@@ -45,4 +55,3 @@ victoriametrics/vmagent:v1.125.0
 victoriametrics/vminsert:v1.125.0-cluster
 victoriametrics/vmselect:v1.125.0-cluster
 victoriametrics/vmstorage:v1.125.0-cluster
-gitlab/gitlab-ce:18.4.0-ce.0
