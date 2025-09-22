@@ -60,7 +60,7 @@ serviceAccounts:
     name: cilium-operator
 hostServices:
   enabled: true
-  protocols: tcp
+  protocols: tcp,udp
 externalIPs:
   enabled: true
 nodePort:
@@ -74,3 +74,6 @@ k8sServicePort: 6443
 ipv4NativeRoutingCIDR: 10.0.0.0/8
 tunnelProtocol: vxlan
 routingMode: tunnel
+
+localRedirectPolicies:
+  enabled: true
