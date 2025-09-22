@@ -217,6 +217,7 @@ func run(ctx context.Context) error {
 					Chart:           "harbor/harbor",
 					Install:         true,
 					Namespace:       "harbor",
+					Values:          file("harbor.yml"),
 					CreateNamespace: true,
 					KubeConfig:      kubeConfig,
 				},
