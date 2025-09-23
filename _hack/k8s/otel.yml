@@ -24,6 +24,8 @@ data:
         allocatable_types_to_report:
           - cpu
           - memory
+      k8s_events:
+        auth_type: serviceAccount
     processors:
       # normalize between prometheus and otel
       resource/normalize:
