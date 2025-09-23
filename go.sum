@@ -576,8 +576,8 @@ github.com/zclconf/go-cty-debug v0.0.0-20240509010212-0d6042c53940 h1:4r45xpDWB6
 github.com/zclconf/go-cty-debug v0.0.0-20240509010212-0d6042c53940/go.mod h1:CmBdvvj3nqzfzJ6nTCIwDTPZ56aVGvDrmztiO5g3qrM=
 github.com/zclconf/go-cty-yaml v1.1.0 h1:nP+jp0qPHv2IhUVqmQSzjvqAWcObN0KBkUl2rWBdig0=
 github.com/zclconf/go-cty-yaml v1.1.0/go.mod h1:9YLUH4g7lOhVWqUbctnVlZ5KLpg7JAprQNgxSZ1Gyxs=
-gitlab.com/gitlab-org/api/client-go v0.147.1 h1:I6SqcetiBg/rfhK05CFdNS61YFsdiZBjIuzXqNY8BAk=
-gitlab.com/gitlab-org/api/client-go v0.147.1/go.mod h1:9Y5ivg3xj5KJ+TAyRmNSiQtpkoqKsHLRRlLKpgXNJ+Q=
+gitlab.com/gitlab-org/api/client-go v0.148.0 h1:64dZ08MfUXOUJQLCkj9gfgdYaG8TEl/Of2cED+3S+pI=
+gitlab.com/gitlab-org/api/client-go v0.148.0/go.mod h1:9Y5ivg3xj5KJ+TAyRmNSiQtpkoqKsHLRRlLKpgXNJ+Q=
 go.opencensus.io v0.24.0 h1:y73uSU6J157QMP2kn2r30vwW1A2W2WFwSCGnAVxeaD0=
 go.opencensus.io v0.24.0/go.mod h1:vNK8G9p7aAivkbmorf4v+7Hgx+Zs0yY+0fOtgBfjQKo=
 go.opentelemetry.io/auto/sdk v1.1.0 h1:cH53jehLUN6UFLY71z+NDOiNJqDdPRaXzTel0sJySYA=
