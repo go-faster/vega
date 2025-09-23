@@ -133,7 +133,8 @@ func (k KindLoad) Run(ctx context.Context) error {
 		cmd.Env = append(cmd.Env, "KUBECONFIG="+k.KubeConfig)
 	}
 	if err := cmd.Run(); err != nil {
-		return errors.Wrap(err, "load images")
+		// Fails on Apple Silicon for some reason.
+		fmt.Fprintln(os.Stderr, "> WARNING!: Failed to load images:", err)
 	}
 	return nil
 }
