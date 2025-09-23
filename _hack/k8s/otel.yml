@@ -77,6 +77,10 @@ data:
       health_check:
         endpoint: "${env:MY_POD_IP}:13133"
     exporters:
+      otlp/oteldb:
+        endpoint: otel-oteldb.faster.svc.cluster.local:4317
+        tls:
+          insecure: true
       otlp/tempo:
         endpoint: tempo.monitoring.svc.cluster.local:4317
         tls:
@@ -121,19 +125,19 @@ data:
         traces:
           receivers: [ otlp ]
           processors: [ memory_limiter, k8sattributes, resource, batch ]
-          exporters: [ otlp/tempo ]
+          exporters: [ otlp/oteldb, otlp/tempo ]
         logs:
           receivers: [ otlp ]
           processors: [ memory_limiter, k8sattributes, resource, batch ]
-          exporters: [ otlphttp/loki, otlphttp/victoriametrics ]
+          exporters: [ otlp/oteldb, otlphttp/loki, otlphttp/victoriametrics ]
         metrics:
           receivers: [ otlp, k8s_cluster, spanmetrics ]
           processors: [ memory_limiter, k8sattributes, resource, batch ]
-          exporters: [ otlphttp/victoriametrics ]
+          exporters: [ otlp/oteldb, otlphttp/victoriametrics ]
         metrics/spanmetrics:
           receivers: [ spanmetrics ]
           processors: [ memory_limiter, batch ]
-          exporters: [ otlphttp/victoriametrics ]
+          exporters: [ otlp/oteldb ]
       extensions: [ zpages, health_check ]
       # https://github.com/open-telemetry/opentelemetry-collector/blob/main/docs/observability.md#how-we-expose-telemetry
       telemetry:
