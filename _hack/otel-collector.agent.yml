@@ -1,0 +1,23 @@
+mode: daemonset
+image:
+  repository: "ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s"
+
+presets:
+  logsCollection:
+    enabled: true
+    includeCollectorLogs: true
+  kubernetesAttributes:
+    enabled: true
+  kubeletMetrics:
+    enabled: true
+  hostMetrics:
+    enabled: true
+
+config:
+  exporters:
+    otlphttp:
+      endpoint: https://example.com:55681
+  service:
+    pipelines:
+      logs:
+        exporters: [otlphttp]

@@ -67,7 +67,7 @@ func (h HelmUpgrade) Run(ctx context.Context) error {
 	cmd.Stderr = os.Stderr
 	fmt.Println(">", strings.Join(cmd.Args, " "))
 	if err := cmd.Run(); err != nil {
-		return errors.Wrap(err, "helm upgrade")
+		return errors.Wrapf(err, "helm upgrade %s", h.Name)
 	}
 	return nil
 }
