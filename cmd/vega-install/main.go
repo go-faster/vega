@@ -164,7 +164,7 @@ func run(ctx context.Context) error {
 					Namespace:       "minio",
 					CreateNamespace: true,
 					KubeConfig:      kubeConfig,
-					Version:         "7.1.1",
+					Version:         "7.0.0",
 				},
 				&installer.HelmUpgrade{
 					Name:            "loki",
