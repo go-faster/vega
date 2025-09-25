@@ -161,6 +161,7 @@ func run(ctx context.Context) error {
 					Name:            "operator",
 					Chart:           "minio-operator/operator",
 					Install:         true,
+					Values:          file("minio.yml"),
 					Namespace:       "minio",
 					CreateNamespace: true,
 					KubeConfig:      kubeConfig,
