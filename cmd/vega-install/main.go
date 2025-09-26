@@ -223,6 +223,7 @@ func run(ctx context.Context) error {
 					Chart:           "aqua/trivy-operator",
 					Install:         true,
 					Namespace:       "trivy-system",
+					Values:          file("trivy.yml"),
 					CreateNamespace: true,
 					KubeConfig:      kubeConfig,
 					Version:         "0.30.0",

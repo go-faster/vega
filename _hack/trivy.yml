@@ -1,0 +1,3 @@
+serviceMonitor:
+  # -- enabled determines whether a serviceMonitor should be deployed
+  enabled: true
