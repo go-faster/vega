@@ -15,9 +15,11 @@ presets:
 
 config:
   exporters:
-    otlphttp:
-      endpoint: https://example.com:55681
+    otlp:
+      endpoint: otel-collector.monitoring.svc.cluster.local:4317
+      tls:
+        insecure: true
   service:
     pipelines:
       logs:
-        exporters: [otlphttp]
+        exporters: [otlp]

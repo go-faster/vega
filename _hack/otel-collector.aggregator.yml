@@ -7,3 +7,17 @@ presets:
     enabled: true
   kubernetesEvents:
     enabled: true
+config:
+  exporters:
+    otlp:
+      endpoint: otel-collector.monitoring.svc.cluster.local:4317
+      tls:
+        insecure: true
+  service:
+    pipelines:
+      logs:
+        exporters: [otlp]
+      metrics:
+        exporters: [otlp]
+      traces:
+        exporters: [otlp]
