@@ -225,4 +225,4 @@ image:
   # registry: ghcr.io
   repository: grafana/grafana-oss
   pullPolicy: IfNotPresent
-  tag: "11.5.0"
+  tag: "12.2.0-17142428006-ubuntu"
