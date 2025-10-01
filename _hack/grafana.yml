@@ -181,6 +181,18 @@ datasources:
         secureJsonData:
           password: admin
 
+      - name: Alertmanager
+        type: alertmanager
+        access: proxy
+        orgId: 1
+        url: http://alerts-alertmanager.monitoring.svc.cluster.local:9093
+        uid: alertmanager
+        jsonData:
+          # Valid options for implementation include mimir, cortex and prometheus
+          implementation: prometheus
+          # Whether or not Grafana should send alert instances to this Alertmanager
+          handleGrafanaManagedAlerts: true
+
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
@@ -222,7 +234,5 @@ sidecar:
     enabled: true
 
 image:
-  # registry: ghcr.io
   repository: grafana/grafana-oss
   pullPolicy: IfNotPresent
-  tag: "12.2.0-17142428006-ubuntu"

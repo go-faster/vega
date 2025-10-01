@@ -1,0 +1,5 @@
+persistence:
+  ## If true, storage will create or use Persistence Volume
+  ## If false, storage will use emptyDir
+  ##
+  enabled: false
