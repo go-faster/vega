@@ -21,7 +21,7 @@ require (
 	github.com/minio/minio-go/v7 v7.0.95
 	github.com/nats-io/nats.go v1.46.1
 	github.com/ogen-go/ent2ogen v0.0.0-20230913015246-1d588150cabc
-	github.com/ogen-go/ogen v1.15.1
+	github.com/ogen-go/ogen v1.15.2
 	github.com/spf13/cobra v1.10.1
 	github.com/stretchr/testify v1.11.1
 	gitlab.com/gitlab-org/api/client-go v0.148.1
