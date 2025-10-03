@@ -433,8 +433,8 @@ github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e/go.mod h1:zD1mROLA
 github.com/nxadm/tail v1.4.4/go.mod h1:kenIhsEOeOJmVchQTgglprH7qJGnHDVpk1VPCcaMI8A=
 github.com/ogen-go/ent2ogen v0.0.0-20230913015246-1d588150cabc h1:t6LjJAAPAdEoip8osBZqzH6OCwzqFOAQxwo1cyZ7XVk=
 github.com/ogen-go/ent2ogen v0.0.0-20230913015246-1d588150cabc/go.mod h1:NZiia07DuI0Zq951WtBfeF/8D9CysMLiQtk+VrczSnw=
-github.com/ogen-go/ogen v1.15.1 h1:Ujz2BY3DhcsuE3QUFbFQgN4qD/ak1GPJFfb58oig4qU=
-github.com/ogen-go/ogen v1.15.1/go.mod h1:bS+BP2cV7+IGjOM24znBmh+PrpZvYFXA7o3BNF4Hj2E=
+github.com/ogen-go/ogen v1.15.2 h1:Hy5XNcDgWur758Kf0+DTQFN8cyBOs58EjDD3NMqih54=
+github.com/ogen-go/ogen v1.15.2/go.mod h1:bS+BP2cV7+IGjOM24znBmh+PrpZvYFXA7o3BNF4Hj2E=
 github.com/olekukonko/tablewriter v0.0.5 h1:P2Ga83D34wi1o9J6Wh1mRuqd4mF/x/lgBS7N7AbDhec=
 github.com/olekukonko/tablewriter v0.0.5/go.mod h1:hPp6KlRPjbx+hW8ykQs1w3UBbZlj6HuIJcUGPhkA7kY=
 github.com/onsi/ginkgo v1.6.0/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+WWjE=
